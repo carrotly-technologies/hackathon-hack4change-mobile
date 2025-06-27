@@ -1,14 +1,11 @@
-import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
+import {DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
 import {Tabs} from 'expo-router';
 import {StatusBar} from 'expo-status-bar';
 import 'react-native-reanimated';
-
-import {useColorScheme} from '@/hooks/useColorScheme';
 import {HapticTab} from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import {Platform} from "react-native";
-import {IconSymbol} from "@/components/ui/IconSymbol";
 import React from "react";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 
@@ -28,8 +25,7 @@ const client = new ApolloClient({
     }
 });
 
-export default function RootLayout() {
-    const colorScheme = useColorScheme();
+const RootLayout = () => {
     const [loaded] = useFonts({
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     });
@@ -41,7 +37,7 @@ export default function RootLayout() {
 
     return (
         <ApolloProvider client={client}>
-            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <ThemeProvider value={DefaultTheme}>
                 <Tabs
                     screenOptions={{
                         headerShown: false,
@@ -57,23 +53,27 @@ export default function RootLayout() {
                     <Tabs.Screen
                         name="index"
                         options={{
-                            title: 'Index',
-                            tabBarIcon: ({color}) => <IconSymbol size={28} name="house.fill" color={color}/>,
+                            title: 'Home',
                         }}
                     />
                     <Tabs.Screen
-                        name="page1"
+                        name="rank"
                         options={{
-                            title: 'Page1',
-                            tabBarIcon: ({color}) => <IconSymbol size={28} name="house.fill" color={color}/>,
                         }}
                     />
                     <Tabs.Screen
-                        name="page2"
+                        name="activity"
                         options={{
-                            title: 'Page2',
-                            tabBarIcon: ({color}) => <IconSymbol size={28} name="house.fill" color={color}/>,
                         }}
+                    />
+                    <Tabs.Screen
+                        name="events"
+                        options={{
+                        }}
+                    />
+                    <Tabs.Screen
+                        name="profile"
+                        options={{}}
                     />
                 </Tabs>
                 <StatusBar style="auto"/>
@@ -81,3 +81,5 @@ export default function RootLayout() {
         </ApolloProvider>
     );
 }
+
+export default RootLayout;
