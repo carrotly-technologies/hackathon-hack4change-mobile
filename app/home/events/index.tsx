@@ -145,7 +145,6 @@ const ScheduleApp = () => {
                         onValueChange={setDistanceRange}
                         minimumTrackTintColor="#6366f1"
                         maximumTrackTintColor="#e5e7eb"
-                    // thumbStyle={styles.sliderThumb}
                     />
                     <View style={styles.distanceLabels}>
                         <Text style={styles.distanceLabel}>0km</Text>

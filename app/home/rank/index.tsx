@@ -1,9 +1,11 @@
-import {useRankingQuery} from '@/api/__generated__/graphql';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import { useRankingQuery } from '@/api/__generated__/graphql';
+import { Image } from 'expo-image';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 
 type User = {
     id: number;
+    uri?: string | null;
     name: string;
     points: number;
     position: number;
@@ -17,7 +19,7 @@ const RankingScreen: React.FC = () => {
             input: {
                 limit: 10,
             }
-        }
+        },
     });
 
     useEffect(() => {
@@ -30,21 +32,21 @@ const RankingScreen: React.FC = () => {
         })
     }, [selectedPeriod])
 
-    const topUsers: User[] = data?.leaderboard?.slice(0, 3).map((v, i) => ({ id: v.id, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 1 })) || [];
-    const otherUsers: User[] = data?.leaderboard?.slice(3).map((v, i) => ({ id: v.id, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 4 })) || [];
+    const topUsers: User[] = data?.leaderboard?.slice(0, 3).map((v, i) => ({ id: v.id, uri: v.avatarUrl, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 1 })) || [];
+    const otherUsers: User[] = data?.leaderboard?.slice(3).map((v, i) => ({ id: v.id, uri: v.avatarUrl, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 4 })) || [];
 
-    const UserAvatar: React.FC<{ size?: number }> = ({ size = 60 }) => (
+    const UserAvatar: React.FC<{ size?: number, uri?: string | null }> = ({ size = 60, uri }) => (
         <View style={[styles.avatar, { width: size, height: size }]}>
-            <View style={styles.avatarIcon}>
+            {uri ? <Image source={{ uri }} style={{ width: size, height: size, borderRadius: '100%' }} /> : <View style={styles.avatarIcon}>
                 <View style={styles.head} />
                 <View style={styles.body} />
-            </View>
+            </View>}
         </View>
     );
 
     const PodiumItem: React.FC<{ user: User; height: number }> = ({ user, height }) => (
         <View style={[styles.podiumItem, { height }]}>
-            <UserAvatar size={user.position === 1 ? 70 : 60} />
+            <UserAvatar size={user.position === 1 ? 70 : 60} uri={user.uri} />
             <Text style={styles.userName}>{user.name}</Text>
             <Text style={styles.userPoints}>{user.points} points</Text>
             <View style={[styles.podiumBase, { height }]}>
@@ -58,7 +60,7 @@ const RankingScreen: React.FC = () => {
             <View style={styles.positionCircle}>
                 <Text style={styles.positionText}>{user.position}</Text>
             </View>
-            <UserAvatar size={50} />
+            <UserAvatar size={50} uri={user.uri} />
             <View style={styles.userInfo}>
                 <Text style={styles.listUserName}>{user.name}</Text>
                 <Text style={styles.listUserPoints}>{user.points} points</Text>
@@ -106,8 +108,8 @@ const RankingScreen: React.FC = () => {
                 </View>
 
                 <View style={styles.podiumContainer}>
-                    {topUsers[0] && <PodiumItem user={topUsers[0]} height={120} />}
-                    {topUsers[1] && <PodiumItem user={topUsers[1]} height={150} />}
+                    {topUsers[1] && <PodiumItem user={topUsers[1]} height={120} />}
+                    {topUsers[0] && <PodiumItem user={topUsers[0]} height={150} />}
                     {topUsers[2] && <PodiumItem user={topUsers[2]} height={100} />}
                 </View>
 
@@ -156,7 +158,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'center',
-        marginBottom: 30,
+        marginBottom: 90,
         paddingHorizontal: 10,
     },
     podiumItem: {
