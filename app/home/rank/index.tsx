@@ -1,8 +1,8 @@
 import { useRankingQuery } from '@/api/__generated__/graphql';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type User = {
@@ -44,13 +44,29 @@ const useRanking = (mode: 'Tygodniowe' | 'Ogólne') => {
 
 const RankingScreen: React.FC = () => {
     const [selectedPeriod, setSelectedPeriod] = useState<'Tygodniowe' | 'Ogólne'>('Tygodniowe');
+    const slideAnimation = useRef(new Animated.Value(0)).current;
+    const toggleWidth = useRef(0);
 
     const ranking = useRanking(selectedPeriod);
 
     const topUsers = ranking.slice(0, 3);
     const otherUsers = ranking.slice(3);
 
-    console.log({ topUsers, otherUsers, selectedPeriod });
+    const animateSlide = (toValue: number) => {
+        Animated.timing(slideAnimation, {
+            toValue,
+            duration: 200,
+            useNativeDriver: false,
+        }).start();
+    };
+
+    const handleTogglePress = (period: 'Tygodniowe' | 'Ogólne') => {
+        setSelectedPeriod(period);
+        if (toggleWidth.current > 0) {
+            const slidePosition = period === 'Tygodniowe' ? 0 : toggleWidth.current / 2;
+            animateSlide(slidePosition);
+        }
+    };
 
     const UserAvatar: React.FC<{ size?: number; uri?: string | null }> = ({ size = 60, uri }) => (
         <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}>
@@ -132,14 +148,29 @@ const RankingScreen: React.FC = () => {
                 style={{ flex: 1 }}
             >
                 <View style={styles.toggleContainer}>
-                    <View style={styles.toggleBorder}>
-                        <TouchableOpacity
+                    <View
+                        style={styles.toggleBorder}
+                        onLayout={(event) => {
+                            const { width } = event.nativeEvent.layout;
+                            toggleWidth.current = width;
+
+                            if (selectedPeriod === 'Ogólne') {
+                                slideAnimation.setValue(width / 2);
+                            }
+                        }}
+                    >
+                        <Animated.View
                             style={[
-                                styles.toggleButton,
-                                styles.toggleButtonLeft,
-                                selectedPeriod === 'Tygodniowe' && styles.toggleButtonActive,
+                                styles.slidingBackground,
+                                {
+                                    transform: [{ translateX: slideAnimation }],
+                                    width: toggleWidth.current > 0 ? toggleWidth.current / 2 : '50%',
+                                }
                             ]}
-                            onPress={() => setSelectedPeriod('Tygodniowe')}
+                        />
+                        <TouchableOpacity
+                            style={[styles.toggleButton, styles.toggleButtonLeft]}
+                            onPress={() => handleTogglePress('Tygodniowe')}
                         >
                             <Text
                                 style={[
@@ -151,12 +182,8 @@ const RankingScreen: React.FC = () => {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[
-                                styles.toggleButton,
-                                styles.toggleButtonRight,
-                                selectedPeriod === 'Ogólne' && styles.toggleButtonActive,
-                            ]}
-                            onPress={() => setSelectedPeriod('Ogólne')}
+                            style={[styles.toggleButton, styles.toggleButtonRight]}
+                            onPress={() => handleTogglePress('Ogólne')}
                         >
                             <Text
                                 style={[
@@ -206,36 +233,34 @@ const styles = StyleSheet.create({
         paddingVertical: 19,
     },
     toggleContainer: {
+    },
+    toggleBorder: {
+        paddingTop: 25,
+        paddingBottom: 12,
+        flexDirection: 'row',
+        position: 'relative',
         backgroundColor: '#fff',
         borderBottomLeftRadius: 16,
         borderBottomRightRadius: 16,
-        paddingHorizontal: 9,
-        paddingVertical: 19,
     },
-    toggleBorder: {
-        flexDirection: 'row',
-        borderRadius: 25,
+    slidingBackground: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        height: 6,
+        backgroundColor: '#437454',
+        zIndex: 1,
     },
     toggleButton: {
         flex: 1,
         paddingVertical: 12,
         paddingHorizontal: 20,
         alignItems: 'center',
-        borderWidth: 2,
+        zIndex: 1,
     },
     toggleButtonLeft: {
-        borderTopLeftRadius: 21,
-        borderBottomLeftRadius: 21,
-        borderRightWidth: 0,
     },
     toggleButtonRight: {
-        borderTopRightRadius: 21,
-        borderBottomRightRadius: 21,
-        borderLeftWidth: 0
-    },
-    toggleButtonActive: {
-        borderColor: '#437454',
-        backgroundColor: '#CDE5D5',
     },
     toggleText: {
         color: '#666',
@@ -243,7 +268,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     toggleTextActive: {
-        color: '#437454',
+        color: '#000',
+        fontWeight: 'bold',
     },
     podiumSection: {
         height: 320,
