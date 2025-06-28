@@ -10,3 +10,14 @@ export type MemoFeed = {
 export type MemoFeedProps = {
     feed: MemoFeed[];
 }
+
+
+export type ActivityState = {
+    isStarted: boolean;
+    isPlaying: boolean;
+}
+
+export type ActivityActionsProps = {
+    setStarted: (isStarted: boolean) => void;
+    setPlaying: (isPlaying: boolean) => void;
+}
