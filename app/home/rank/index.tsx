@@ -1,6 +1,7 @@
+import { useRankingQuery } from '@/api/__generated__/graphql';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -12,21 +13,44 @@ type User = {
     position: number;
 };
 
+const useRanking = (mode: 'Tygodniowe' | 'Ogólne') => {
+    const { data, refetch } = useRankingQuery({
+        variables: {
+            input: {
+                limit: 10,
+            },
+        },
+        fetchPolicy: 'cache-first',
+    });
+
+    useEffect(() => {
+        refetch({
+            input: {
+                startDate: mode === 'Tygodniowe' ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
+                endDate: mode === 'Tygodniowe' ? new Date() : null,
+                limit: 10,
+            },
+        });
+    }, [mode, refetch]);
+
+    return data?.leaderboard?.map((user, index) => ({
+        id: user.id,
+        uri: user.avatarUrl ?? null,
+        name: `${user.firstname} ${user.lastname}`,
+        points: user.totalPoints,
+        position: index + 1,
+    })) || [];
+}
+
 const RankingScreen: React.FC = () => {
     const [selectedPeriod, setSelectedPeriod] = useState<'Tygodniowe' | 'Ogólne'>('Tygodniowe');
 
-    const mockUsers: User[] = [
-        { id: 1, uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 1237, position: 1 },
-        { id: 2, uri: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 1237, position: 2 },
-        { id: 3, uri: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 1237, position: 3 },
-        { id: 4, uri: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 4 },
-        { id: 5, uri: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 5 },
-        { id: 6, uri: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 6 },
-        { id: 7, uri: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 7 },
-    ];
+    const ranking = useRanking(selectedPeriod);
 
-    const topUsers = mockUsers.slice(0, 3);
-    const otherUsers = mockUsers.slice(3);
+    const topUsers = ranking.slice(0, 3);
+    const otherUsers = ranking.slice(3);
+
+    console.log({ topUsers, otherUsers, selectedPeriod });
 
     const UserAvatar: React.FC<{ size?: number; uri?: string | null }> = ({ size = 60, uri }) => (
         <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}>
@@ -211,7 +235,7 @@ const styles = StyleSheet.create({
     },
     toggleButtonActive: {
         borderColor: '#437454',
-        backgroundColor: '#22c55e',
+        backgroundColor: '#CDE5D5',
     },
     toggleText: {
         color: '#666',
@@ -219,7 +243,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     toggleTextActive: {
-        color: '#fff',
+        color: '#437454',
     },
     podiumSection: {
         height: 320,
