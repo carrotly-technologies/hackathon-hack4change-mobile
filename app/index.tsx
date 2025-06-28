@@ -15,6 +15,10 @@ const Index = () => {
                 firstname: data.user.firstname,
                 lastname: data.user.lastname,
                 avatarUrl: data.user.avatarUrl ?? "https://picsum.photos/64/64",
+                coins: data?.user.coin,
+                challengesProgress: data?.user.challengeProgress.map(ch => ({
+                    ...ch
+                }))
             })
 
             router.replace('/home')

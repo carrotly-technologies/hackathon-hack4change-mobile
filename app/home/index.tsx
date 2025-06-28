@@ -22,9 +22,9 @@ export default function Index() {
             <SafeAreaView style={{}} edges={['left', 'right']}>
                 <ScrollView>
                     <Header/>
-                    {data && <MemoFeed feed={data?.activities.data.map(dta => ({
+                    {data && <MemoFeed hero={true} feed={data?.activities.data.map(dta => ({
                         id: dta.id,
-                        name: dta.name,
+                        name: dta.name ?? "",
                         details: String(dta.durationTime),
                         avatar: dta.user?.avatarUrl ?? "",
                         length: dta.distance,

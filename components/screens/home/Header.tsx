@@ -1,5 +1,6 @@
 import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
 import {useUserQuery} from "@/api/__generated__/graphql";
+import CarrotCoin from "@/components/svg/CarrotCoin";
 
 const Header = () => {
 
@@ -12,8 +13,14 @@ const Header = () => {
     }
 
     return <View style={styles.container}>
-        <Text style={styles.header}>{data.user?.firstname} {data.user?.lastname}</Text>
-        <Text style={styles.subheader}>Co chcesz zrobić?</Text>
+        <View style={styles.nameContainer}>
+            <Text style={styles.header}>{data.user?.firstname} {data.user?.lastname}</Text>
+            <Text style={styles.subheader}>Co chcesz zrobić?</Text>
+        </View>
+        <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 5}}>
+            <CarrotCoin width={38} height={38}/>
+            <Text style={styles.carrotCoinTitle}>{data?.user?.coin ?? 0}</Text>
+        </View>
     </View>
 }
 
@@ -27,6 +34,11 @@ const styles = StyleSheet.create({
     subheader: {
         fontSize: 16,
         color: '#205231',
+    },
+    carrotCoinTitle: {
+        fontSize: 16,
+        color: 'black',
+        fontWeight: "bold"
     },
     container: {
         padding: 20,
@@ -43,6 +55,12 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.1,
         shadowRadius: 2,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    nameContainer: {
+
     }
 });
 

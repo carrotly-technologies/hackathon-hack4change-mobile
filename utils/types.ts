@@ -14,6 +14,7 @@ export type MemoFeed = {
 
 export type MemoFeedProps = {
     feed: MemoFeed[];
+    hero?: boolean
 }
 
 
@@ -66,6 +67,13 @@ export type SimpleUser = {
     firstname: string;
     lastname: string;
     avatarUrl: string;
+    coins: number;
+    challengesProgress: {
+        challengeId: string;
+        id: string;
+        progress: number;
+        status: string;
+    }[]
 }
 
 export interface TabScreen {

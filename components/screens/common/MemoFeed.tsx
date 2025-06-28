@@ -5,18 +5,18 @@ import {ScrollView, StyleSheet, Text, View} from "react-native";
 import {Avatar} from 'react-native-elements';
 import {Image} from "expo-image";
 
-const MemoFeed: FC<MemoFeedProps> = ({feed}) => {
+const MemoFeed: FC<MemoFeedProps> = ({feed, hero}) => {
     return <>
         {feed.map((item) => (
             <Card key={item.id} styles={styles.containerStyle}>
-                <View style={styles.avatarContainer}>
+                {hero && <View style={styles.avatarContainer}>
                     <Avatar rounded source={{uri: item.avatar}} avatarStyle={styles.avatarStyle}
                             containerStyle={{width: 50, height: 50}}/>
                     <View style={styles.usernameContainer}>
                         <Text style={styles.usernameTextStyle}>{item.name}</Text>
                         <Text>{item.details}</Text>
                     </View>
-                </View>
+                </View>}
                 <View style={styles.memoParametersStyle}>
                     <View style={styles.memoParameterDetailsStyle}>
                         <Text style={styles.memoParameterHeader}>Dystans</Text>

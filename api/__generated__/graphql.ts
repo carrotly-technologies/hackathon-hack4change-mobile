@@ -163,6 +163,7 @@ export type AwardInput = {
 
 export type AwardObject = {
   __typename?: 'AwardObject';
+  coin: Scalars['Float']['output'];
   createdAt: Scalars['DateTime']['output'];
   iconUrl: Scalars['String']['output'];
   id: Scalars['ObjectID']['output'];
@@ -208,6 +209,7 @@ export type ChallengeInput = {
 
 export type ChallengeObject = {
   __typename?: 'ChallengeObject';
+  coin: Scalars['Float']['output'];
   createdAt: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
   iconUrl: Scalars['String']['output'];
@@ -223,12 +225,29 @@ export type ChallengePaginationResponse = {
   metadata: PaginationMetadata;
 };
 
+export type ChallengeProgressFindInput = {
+  challengeId?: InputMaybe<Scalars['ObjectID']['input']>;
+  userId?: InputMaybe<Scalars['ObjectID']['input']>;
+};
+
+export type ChallengeStartInput = {
+  challengeId: Scalars['ObjectID']['input'];
+  userId: Scalars['ObjectID']['input'];
+};
+
 export type ChallengeUpdateInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   iconUrl?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ObjectID']['input'];
   points?: InputMaybe<Scalars['Float']['input']>;
   topic?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ChallengeUpdateProgressInput = {
+  challengeId: Scalars['ObjectID']['input'];
+  /** Progress percentage from 0 to 100 */
+  progress: Scalars['Int']['input'];
+  userId: Scalars['ObjectID']['input'];
 };
 
 export enum Error {
@@ -409,13 +428,16 @@ export type Mutation = {
   awardUpdate?: Maybe<AwardObject>;
   challengeCreate: ChallengeObject;
   challengeDelete?: Maybe<ChallengeObject>;
+  challengeStart: UserChallengeProgressObject;
   challengeUpdate?: Maybe<ChallengeObject>;
+  challengeUpdateProgress: UserChallengeProgressObject;
   eventCreate: EventObject;
   eventDelete?: Maybe<EventObject>;
   eventUpdate?: Maybe<EventObject>;
   exampleCreate: ExampleObject;
   exampleDelete: Success;
   exampleUpdate: ExampleObject;
+  userAddAward: UserObject;
   userCreate: UserObject;
 };
 
@@ -485,8 +507,18 @@ export type MutationChallengeDeleteArgs = {
 };
 
 
+export type MutationChallengeStartArgs = {
+  input: ChallengeStartInput;
+};
+
+
 export type MutationChallengeUpdateArgs = {
   input: ChallengeUpdateInput;
+};
+
+
+export type MutationChallengeUpdateProgressArgs = {
+  input: ChallengeUpdateProgressInput;
 };
 
 
@@ -517,6 +549,11 @@ export type MutationExampleDeleteArgs = {
 
 export type MutationExampleUpdateArgs = {
   input: ExampleUpdateInput;
+};
+
+
+export type MutationUserAddAwardArgs = {
+  input: UserAddAwardInput;
 };
 
 
@@ -575,6 +612,7 @@ export type Query = {
   leaderboard: Array<LeaderboardEntryObject>;
   minioTest: Scalars['String']['output'];
   user?: Maybe<UserObject>;
+  userChallengeProgress: Array<UserChallengeProgressObject>;
   users: UserPaginationResponse;
 };
 
@@ -659,6 +697,11 @@ export type QueryUserArgs = {
 };
 
 
+export type QueryUserChallengeProgressArgs = {
+  input: ChallengeProgressFindInput;
+};
+
+
 export type QueryUsersArgs = {
   input: UserFindManyInput;
   pagination: PaginationInput;
@@ -679,10 +722,27 @@ export type Success = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UserAddAwardInput = {
+  awardId: Scalars['ObjectID']['input'];
+  userId: Scalars['ObjectID']['input'];
+};
+
+export type UserChallengeProgressObject = {
+  __typename?: 'UserChallengeProgressObject';
+  challengeId: Scalars['ObjectID']['output'];
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ObjectID']['output'];
+  progress: Scalars['Int']['output'];
+  startedAt: Scalars['DateTime']['output'];
+  status: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  userId: Scalars['ObjectID']['output'];
+};
+
 export type UserCreateInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   awardIds?: InputMaybe<Array<Scalars['ObjectID']['input']>>;
-  challengeIds?: InputMaybe<Array<Scalars['ObjectID']['input']>>;
   email: Scalars['String']['input'];
   firstname: Scalars['String']['input'];
   lastname: Scalars['String']['input'];
@@ -711,8 +771,9 @@ export type UserObject = {
   avatarUrl?: Maybe<Scalars['String']['output']>;
   awardIds: Array<Scalars['ObjectID']['output']>;
   awards: Array<AwardObject>;
-  challengeIds: Array<Scalars['ObjectID']['output']>;
+  challengeProgress: Array<UserChallengeProgressObject>;
   challenges: Array<ChallengeObject>;
+  coin: Scalars['Float']['output'];
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   firstname: Scalars['String']['output'];
@@ -838,7 +899,25 @@ export type ActivityUpdateMutation = {
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'UserObject', id: any, email: string, firstname: string, lastname: string, avatarUrl?: string | null } | null };
+export type UserQuery = {
+  __typename?: 'Query',
+  user?: {
+    __typename?: 'UserObject',
+    id: any,
+    email: string,
+    firstname: string,
+    lastname: string,
+    avatarUrl?: string | null,
+    coin: number,
+    challengeProgress: Array<{
+      __typename?: 'UserChallengeProgressObject',
+      challengeId: any,
+      id: any,
+      progress: number,
+      status: string
+    }>
+  } | null
+};
 
 export type RankingQueryVariables = Exact<{
   input: LeaderboardFindInput;
@@ -1047,7 +1126,6 @@ export function useActivityAddPathPointMutation(baseOptions?: Apollo.MutationHoo
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>(ActivityAddPathPointDocument, options);
 }
-
 export type ActivityAddPathPointMutationHookResult = ReturnType<typeof useActivityAddPathPointMutation>;
 export type ActivityAddPathPointMutationResult = Apollo.MutationResult<ActivityAddPathPointMutation>;
 export type ActivityAddPathPointMutationOptions = Apollo.BaseMutationOptions<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>;
@@ -1081,7 +1159,6 @@ export function useActivityAddTrashMutation(baseOptions?: Apollo.MutationHookOpt
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>(ActivityAddTrashDocument, options);
 }
-
 export type ActivityAddTrashMutationHookResult = ReturnType<typeof useActivityAddTrashMutation>;
 export type ActivityAddTrashMutationResult = Apollo.MutationResult<ActivityAddTrashMutation>;
 export type ActivityAddTrashMutationOptions = Apollo.BaseMutationOptions<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>;
@@ -1115,7 +1192,6 @@ export function useActivityEndMutation(baseOptions?: Apollo.MutationHookOptions<
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<ActivityEndMutation, ActivityEndMutationVariables>(ActivityEndDocument, options);
 }
-
 export type ActivityEndMutationHookResult = ReturnType<typeof useActivityEndMutation>;
 export type ActivityEndMutationResult = Apollo.MutationResult<ActivityEndMutation>;
 export type ActivityEndMutationOptions = Apollo.BaseMutationOptions<ActivityEndMutation, ActivityEndMutationVariables>;
@@ -1149,7 +1225,6 @@ export function useActivityStartMutation(baseOptions?: Apollo.MutationHookOption
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<ActivityStartMutation, ActivityStartMutationVariables>(ActivityStartDocument, options);
 }
-
 export type ActivityStartMutationHookResult = ReturnType<typeof useActivityStartMutation>;
 export type ActivityStartMutationResult = Apollo.MutationResult<ActivityStartMutation>;
 export type ActivityStartMutationOptions = Apollo.BaseMutationOptions<ActivityStartMutation, ActivityStartMutationVariables>;
@@ -1224,7 +1299,6 @@ export function useActivityUpdateMutation(baseOptions?: Apollo.MutationHookOptio
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<ActivityUpdateMutation, ActivityUpdateMutationVariables>(ActivityUpdateDocument, options);
 }
-
 export type ActivityUpdateMutationHookResult = ReturnType<typeof useActivityUpdateMutation>;
 export type ActivityUpdateMutationResult = Apollo.MutationResult<ActivityUpdateMutation>;
 export type ActivityUpdateMutationOptions = Apollo.BaseMutationOptions<ActivityUpdateMutation, ActivityUpdateMutationVariables>;
@@ -1236,6 +1310,13 @@ export const UserDocument = gql`
     firstname
     lastname
     avatarUrl
+    coin
+    challengeProgress {
+      challengeId
+      id
+      progress
+      status
+    }
   }
 }
     `;

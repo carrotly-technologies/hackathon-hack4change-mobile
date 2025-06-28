@@ -5,5 +5,13 @@ query User {
         firstname
         lastname
         avatarUrl
+        coin
+        challengeProgress {
+            challengeId
+            id
+            progress
+            status
+
+        }
     }
 }

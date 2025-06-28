@@ -1,363 +1,271 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Ionicons, Octicons} from '@expo/vector-icons';
-import {router} from 'expo-router';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {Entypo, Ionicons} from '@expo/vector-icons';
+import Card from "@/components/ui/Card";
+import {useActivityStore} from "@/store/activity.store";
+import CarrotCoin from "@/components/svg/CarrotCoin";
+import CircularProgress from "react-native-circular-progress-indicator";
 
-const ProfileScreen: React.FC = () => {
-    const user = {
-        name: 'Jan Kowalski',
-        username: '@jankowalski',
-        bio: 'Pasjonat ekologii i ochrony środowiska. Lubię spędzać czas na świeżym powietrzu i dbać o naszą planetę.',
-        stats: {
-            activities: 24,
-            points: 1250,
-            rank: 5,
-            trash: 156
-        }
-    };
+const ProfileScreen = () => {
+    const badges = Array(10).fill(null);
+    const {user} = useActivityStore();
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                <View style={styles.header}>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => router.back()}
-                    >
-                        <Ionicons name="arrow-back" size={24} color="#000"/>
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Profil</Text>
-                    <View style={styles.headerRight}/>
-                </View>
-
-                <View style={styles.profileSection}>
-                    <View style={styles.avatarContainer}>
-                        <View style={styles.avatar}>
-                            <View style={styles.avatarIcon}>
-                                <View style={styles.head}/>
-                                <View style={styles.body}/>
-                            </View>
-                        </View>
-                    </View>
-
-                    <Text style={styles.userName}>{user.name}</Text>
-                    <Text style={styles.userHandle}>{user.username}</Text>
-                    <Text style={styles.userBio}>{user.bio}</Text>
-
-                    <TouchableOpacity style={styles.editButton}>
-                        <Text style={styles.editButtonText}>Edytuj profil</Text>
-                    </TouchableOpacity>
-                </View>
-
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.statsContainer}>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statValue}>{user.stats.activities}</Text>
-                        <Text style={styles.statLabel}>Aktywności</Text>
+                    <View style={styles.statCard}>
+                        <Text style={styles.statLabel}>Punkty rankingowe</Text>
+                        <Text style={styles.statValue}>234</Text>
                     </View>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statValue}>{user.stats.points}</Text>
-                        <Text style={styles.statLabel}>Punkty</Text>
-                    </View>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statValue}>#{user.stats.rank}</Text>
-                        <Text style={styles.statLabel}>Ranking</Text>
-                    </View>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statValue}>{user.stats.trash}</Text>
-                        <Text style={styles.statLabel}>Śmieci</Text>
+                    <View style={styles.statCard}>
+                        <View style={styles.coinMarketHeader}>
+                            <Text style={styles.statLabel}>Coin market</Text>
+                            <TouchableOpacity onPress={() => console.log("")}>
+                                <Entypo name="chevron-with-circle-right" size={25} color="#437454"/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.coinValue}>
+                            <TouchableOpacity>
+                                <CarrotCoin width={38} height={38}/>
+                            </TouchableOpacity>
+                            <Text style={styles.coinStatValue}>123 coins</Text>
+                        </View>
                     </View>
                 </View>
 
-                <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Ostatnie aktywności</Text>
-
-                    <View style={styles.activityCard}>
-                        <View style={styles.activityHeader}>
-                            <View style={styles.activityType}>
-                                <Octicons name="trash" size={16} color="#fff"/>
-                            </View>
-                            <Text style={styles.activityDate}>24 kwietnia 2023</Text>
-                        </View>
-                        <Text style={styles.activityTitle}>Sprzątanie parku miejskiego</Text>
-                        <View style={styles.activityStats}>
-                            <View style={styles.activityStat}>
-                                <Ionicons name="time-outline" size={16} color="#6c757d"/>
-                                <Text style={styles.activityStatText}>01:45:30</Text>
-                            </View>
-                            <View style={styles.activityStat}>
-                                <Ionicons name="walk-outline" size={16} color="#6c757d"/>
-                                <Text style={styles.activityStatText}>2.5 km</Text>
-                            </View>
-                            <View style={styles.activityStat}>
-                                <Octicons name="trash" size={16} color="#6c757d"/>
-                                <Text style={styles.activityStatText}>23</Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={styles.activityCard}>
-                        <View style={styles.activityHeader}>
-                            <View style={[styles.activityType, {backgroundColor: '#28a745'}]}>
-                                <Ionicons name="leaf" size={16} color="#fff"/>
-                            </View>
-                            <Text style={styles.activityDate}>18 kwietnia 2023</Text>
-                        </View>
-                        <Text style={styles.activityTitle}>Sadzenie drzew w lesie miejskim</Text>
-                        <View style={styles.activityStats}>
-                            <View style={styles.activityStat}>
-                                <Ionicons name="time-outline" size={16} color="#6c757d"/>
-                                <Text style={styles.activityStatText}>02:30:15</Text>
-                            </View>
-                            <View style={styles.activityStat}>
-                                <Ionicons name="walk-outline" size={16} color="#6c757d"/>
-                                <Text style={styles.activityStatText}>1.8 km</Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    <TouchableOpacity style={styles.viewAllButton}>
-                        <Text style={styles.viewAllButtonText}>Zobacz wszystkie</Text>
+            <Card styles={styles.section}>
+                <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Moje odznaczenia</Text>
+                    <TouchableOpacity onPress={() => console.log("")}>
+                        <Entypo name="chevron-with-circle-right" size={25} color="#437454"/>
                     </TouchableOpacity>
-                </View>
-
-                <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Osiągnięcia</Text>
-
-                    <View style={styles.achievementsContainer}>
-                        <View style={styles.achievementItem}>
-                            <View style={styles.achievementIcon}>
-                                <Octicons name="star-fill" size={24} color="#ffc107"/>
-                            </View>
-                            <Text style={styles.achievementName}>Początkujący</Text>
-                        </View>
-
-                        <View style={styles.achievementItem}>
-                            <View style={styles.achievementIcon}>
-                                <Octicons name="flame" size={24} color="#fd7e14"/>
-                            </View>
-                            <Text style={styles.achievementName}>Zapaleńiec</Text>
-                        </View>
-
-                        <View style={styles.achievementItem}>
-                            <View style={styles.achievementIcon}>
-                                <Octicons name="heart-fill" size={24} color="#dc3545"/>
-                            </View>
-                            <Text style={styles.achievementName}>Ekolog</Text>
-                        </View>
                     </View>
-
-                    <TouchableOpacity style={styles.viewAllButton}>
-                        <Text style={styles.viewAllButtonText}>Zobacz wszystkie</Text>
-                    </TouchableOpacity>
+                <View style={styles.badgesGrid}>
+                    {badges.map((_, index) => (
+                        <TouchableOpacity key={index} style={styles.badgeItem}>
+                            <Ionicons name="medal-outline" size={24} color="#ccc"/>
+                        </TouchableOpacity>
+                    ))}
                 </View>
+            </Card>
 
-                <View style={{height: 40}}/>
+            <Card styles={styles.section}>
+                <Text style={styles.sectionTitle}>Trwające wyzwania</Text>
+
+                {user?.challengesProgress.map((challenge, index) => (
+                    <View key={index} style={styles.challengeItem}>
+                        <CircularProgress value={challenge.progress} radius={30} showProgressValue={false}
+                                          activeStrokeColor={"#437454"}/>
+                        <View style={styles.challengeContent}>
+                            <Text style={styles.challengeTitle}>
+                                Przejdź 15 km rowerem w tygodniu
+                            </Text>
+                            <Text style={styles.challengeSubtitle}>5 km przejechane</Text>
+                            </View>
+                        </View>
+                ))}
+
+            </Card>
+            <View style={{height: 100}}/>
             </ScrollView>
-        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
-    },
-    scrollView: {
-        flex: 1,
+        backgroundColor: '#f5f5f5',
     },
     header: {
+        backgroundColor: 'white',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        backgroundColor: '#fff',
-        borderBottomWidth: 1,
-        borderBottomColor: '#e9ecef',
-    },
-    backButton: {
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#000',
-    },
-    headerRight: {
-        width: 40,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
     },
     profileSection: {
-        alignItems: 'center',
-        paddingVertical: 30,
-        paddingHorizontal: 20,
-        backgroundColor: '#fff',
-    },
-    avatarContainer: {
-        marginBottom: 15,
-    },
-    avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        backgroundColor: '#e9ecef',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    avatarIcon: {
-        alignItems: 'center',
-    },
-    head: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-        backgroundColor: '#adb5bd',
-        marginBottom: 4,
-    },
-    body: {
-        width: 36,
-        height: 24,
-        borderTopLeftRadius: 18,
-        borderTopRightRadius: 18,
-        backgroundColor: '#adb5bd',
-    },
-    userName: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#000',
-        marginBottom: 5,
-    },
-    userHandle: {
-        fontSize: 16,
-        color: '#6c757d',
-        marginBottom: 15,
-    },
-    userBio: {
-        fontSize: 14,
-        color: '#495057',
-        textAlign: 'center',
-        marginBottom: 20,
-        lineHeight: 20,
-    },
-    editButton: {
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        backgroundColor: '#6f42c1',
-        borderRadius: 20,
-    },
-    editButtonText: {
-        color: '#fff',
-        fontWeight: '500',
-    },
-    statsContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        marginTop: 1,
-        paddingVertical: 20,
-    },
-    statItem: {
-        flex: 1,
-        alignItems: 'center',
-    },
-    statValue: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#000',
-        marginBottom: 5,
-    },
-    statLabel: {
-        fontSize: 12,
-        color: '#6c757d',
-    },
-    sectionContainer: {
-        backgroundColor: '#fff',
-        marginTop: 15,
-        paddingVertical: 20,
-        paddingHorizontal: 20,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#000',
-        marginBottom: 15,
-    },
-    activityCard: {
-        backgroundColor: '#f8f9fa',
-        borderRadius: 12,
-        padding: 15,
-        marginBottom: 15,
-    },
-    activityHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
     },
-    activityType: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-        backgroundColor: '#dc3545',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 10,
-    },
-    activityDate: {
-        fontSize: 12,
-        color: '#6c757d',
-    },
-    activityTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#000',
-        marginBottom: 10,
-    },
-    activityStats: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    activityStat: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginRight: 15,
-    },
-    activityStatText: {
-        fontSize: 12,
-        color: '#6c757d',
-        marginLeft: 5,
-    },
-    viewAllButton: {
-        alignItems: 'center',
-        paddingVertical: 10,
-    },
-    viewAllButtonText: {
-        color: '#6f42c1',
-        fontWeight: '500',
-    },
-    achievementsContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginBottom: 15,
-    },
-    achievementItem: {
-        width: '33%',
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    achievementIcon: {
+    profileImage: {
         width: 50,
         height: 50,
         borderRadius: 25,
-        backgroundColor: '#f8f9fa',
-        alignItems: 'center',
+        marginRight: 12,
+    },
+    profileInfo: {
         justifyContent: 'center',
+    },
+    name: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 4,
+    },
+    coinsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    coinsText: {
+        fontSize: 14,
+        color: '#4CAF50',
+        marginLeft: 4,
+        fontWeight: '500',
+    },
+    settingsButton: {
+        padding: 8,
+    },
+    tabContainer: {
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        marginHorizontal: 20,
+        marginTop: 16,
+        borderRadius: 12,
+        padding: 4,
+    },
+    tab: {
+        flex: 1,
+        paddingVertical: 12,
+        alignItems: 'center',
+        borderRadius: 8,
+    },
+    activeTab: {
+        backgroundColor: '#4CAF50',
+    },
+    tabText: {
+        fontSize: 14,
+        color: '#666',
+        fontWeight: '500',
+    },
+    activeTabText: {
+        color: 'white',
+    },
+    content: {
+        flex: 1,
+        paddingHorizontal: 20,
+    },
+    statsContainer: {
+        flexDirection: 'row',
+        marginTop: 20,
+        gap: 12,
+    },
+    statCard: {
+        flex: 1,
+        backgroundColor: 'white',
+        borderRadius: 16,
+        padding: 16,
+        elevation: 1,
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+    },
+    statLabel: {
+        fontSize: 12,
+        color: '#666',
+    },
+    statValue: {
+        fontSize: 48,
+        fontWeight: '700',
+        color: '#333',
+    },
+    coinStatValue: {
+        fontSize: 25,
+        fontWeight: '700',
+    },
+    coinMarketHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: 8,
     },
-    achievementName: {
+    coinValue: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    section: {
+        marginTop: 24,
+        gap: 10
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    sectionTitle: {
+        fontSize: 16,
+        marginBottom: 8,
+        fontWeight: '600',
+        color: '#333',
+    },
+    badgesGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 12,
+    },
+    badgeItem: {
+        width: 56,
+        height: 56,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 1,
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+    },
+    challengeItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    challengeIndicator: {
+        marginRight: 16,
+    },
+    progressRing: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: '#4CAF50',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    inactiveRing: {
+        borderColor: '#e0e0e0',
+    },
+    progressFill: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#4CAF50',
+    },
+    inactiveFill: {
+        backgroundColor: '#e0e0e0',
+    },
+    challengeContent: {
+        flex: 1,
+    },
+    challengeTitle: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#333',
+        marginBottom: 4,
+    },
+    challengeSubtitle: {
         fontSize: 12,
-        color: '#495057',
-        textAlign: 'center',
+        color: '#666',
     },
 });
 
