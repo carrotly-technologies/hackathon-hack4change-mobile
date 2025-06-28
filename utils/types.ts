@@ -26,6 +26,8 @@ export type ActivityState = {
     currentLocation: LocationCoords | null;
     locations: LocationCoords[];
     distance: number; // Distance in meters
+    trashCount: number; // Number of trash items collected
+    trashLocations: LocationCoords[]; // Locations where trash was collected
 }
 
 export type ActivityActionsProps = {
@@ -39,4 +41,9 @@ export type ActivityActionsProps = {
     setDistance: (distance: number) => void;
     incrementDistance: (additionalDistance: number) => void;
     resetLocations: () => void;
+    incrementTrashCount: () => void;
+    setTrashCount: (count: number) => void;
+    resetTrashCount: () => void;
+    addTrashLocation: (location: LocationCoords) => void;
+    resetTrashLocations: () => void;
 }

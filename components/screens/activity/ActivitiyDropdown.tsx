@@ -1,13 +1,17 @@
-import React, {useState} from "react";
-import DropDownPicker from "react-native-dropdown-picker";
+import React, {useEffect, useState} from "react";
+import DropDownPicker, {ValueType} from "react-native-dropdown-picker";
 
 const ActivityDropdown = () => {
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState<ValueType | null>(null);
     const [items, setItems] = useState([
         {label: 'Apple', value: 'apple'},
         {label: 'Banana', value: 'banana'}
     ]);
+
+    useEffect(() => {
+        setValue(items[0].value);
+    }, []);
 
 
     return <DropDownPicker
@@ -17,7 +21,8 @@ const ActivityDropdown = () => {
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
-        style={{width: "90%", margin: "auto", marginVertical: 14, borderBottomColor: "black", borderBottomWidth: 1}}
+        containerStyle={{width: "90%", margin: "auto"}}
+        style={{marginVertical: 14, borderBottomColor: "black", borderBottomWidth: 1}}
     />
 };
 

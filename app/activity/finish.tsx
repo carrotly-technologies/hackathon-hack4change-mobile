@@ -6,11 +6,21 @@ import Map from "@/components/screens/activity/Map";
 import {router} from "expo-router";
 
 const FinishScreen = () => {
-    const {setPlaying, elapsedTime, setElapsedTime, distance, resetLocations, setPaused} = useActivityStore();
+    const {
+        setPlaying,
+        elapsedTime,
+        setElapsedTime,
+        distance,
+        resetLocations,
+        setPaused,
+        trashCount,
+        resetTrashCount,
+        trashLocations,
+        resetTrashLocations
+    } = useActivityStore();
     const [activityName, setActivityName] = useState("");
     const [description, setDescription] = useState("");
 
-    // Format elapsed time (seconds) to HH:MM:SS
     const formatTime = (seconds: number) => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -19,13 +29,11 @@ const FinishScreen = () => {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    // Format distance (meters) to kilometers with 2 decimal places
     const formatDistance = (meters: number) => {
         const kilometers = meters / 1000;
         return kilometers.toFixed(2);
     };
 
-    // Stop the timer when the component mounts
     useEffect(() => {
         setPlaying(false);
     }, []);
@@ -59,7 +67,7 @@ const FinishScreen = () => {
                     </View>
                     <View style={styles.statItem}>
                         <Text style={styles.statLabel}>Ilość śmieci</Text>
-                        <Text style={styles.statValue}>10</Text>
+                        <Text style={styles.statValue}>{trashCount}</Text>
                     </View>
                     <View style={styles.statItem}>
                         <Text style={styles.statLabel}>Punkty</Text>
@@ -95,13 +103,12 @@ const FinishScreen = () => {
                 <TouchableOpacity
                     style={styles.saveButton}
                     onPress={() => {
-                        // Reset activity state when saving
                         setPlaying(false);
                         setPaused(false);
-                        // Reset elapsed time to 0 for the next activity
                         setElapsedTime(0);
-                        // Reset locations and distance
                         resetLocations();
+                        resetTrashCount();
+                        resetTrashLocations();
                         router.replace('/home/activity');
                     }}
                 >

@@ -9,6 +9,8 @@ export const useActivityStore = create<ActivityState & ActivityActionsProps>((se
     currentLocation: null,
     locations: [],
     distance: 0,
+    trashCount: 0,
+    trashLocations: [],
 
     setStarted: (value: boolean) => set({isStarted: value}),
     setPlaying: (value: boolean) => set({isPlaying: value}),
@@ -24,5 +26,14 @@ export const useActivityStore = create<ActivityState & ActivityActionsProps>((se
     incrementDistance: (additionalDistance: number) => set((state) => ({
         distance: state.distance + additionalDistance
     })),
-    resetLocations: () => set({currentLocation: null, locations: [], distance: 0})
+    resetLocations: () => set({currentLocation: null, locations: [], distance: 0}),
+
+    incrementTrashCount: () => set((state) => ({trashCount: state.trashCount + 1})),
+    setTrashCount: (count: number) => set({trashCount: count}),
+    resetTrashCount: () => set({trashCount: 0}),
+
+    addTrashLocation: (location) => set((state) => ({
+        trashLocations: [...state.trashLocations, location]
+    })),
+    resetTrashLocations: () => set({trashLocations: []})
 }));

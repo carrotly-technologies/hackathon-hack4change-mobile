@@ -13,13 +13,13 @@ const ActivityIndex = () => {
         isPaused, setPaused,
         incrementElapsedTime, setElapsedTime,
         currentLocation, setCurrentLocation, addLocation,
-        incrementDistance, resetLocations
+        incrementDistance, resetLocations,
+        incrementTrashCount, addTrashLocation
     } = useActivityStore();
     const timerRef = useRef<number | null>(null);
     const locationSubscription = useRef<Location.LocationSubscription | null>(null);
     const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
 
-    // Request location permissions
     useEffect(() => {
         (async () => {
             const {status} = await Location.requestForegroundPermissionsAsync();
@@ -107,7 +107,6 @@ const ActivityIndex = () => {
         };
     }, [isPlaying, isPaused, locationPermissionGranted]);
 
-    // Set up timer effect
     useEffect(() => {
         if (isPlaying && !isPaused) {
             timerRef.current = window.setInterval(() => {
@@ -119,7 +118,6 @@ const ActivityIndex = () => {
             timerRef.current = null;
         }
 
-        // Cleanup on unmount
         return () => {
             if (timerRef.current) {
                 clearInterval(timerRef.current);
@@ -152,7 +150,33 @@ const ActivityIndex = () => {
         <ActivityTrackdown/>
         <Map/>
 
-        <TouchableOpacity style={styles.plusButtonContainer}>
+        <TouchableOpacity
+            style={styles.plusButtonContainer}
+            onPress={() => {
+                incrementTrashCount();
+                // Save the current location of the trash
+                if (currentLocation) {
+                    addTrashLocation(currentLocation);
+                } else {
+                    // If no current location, try to get one
+                    (async () => {
+                        try {
+                            const location = await Location.getCurrentPositionAsync({
+                                accuracy: Location.Accuracy.BestForNavigation
+                            });
+                            const locationData = {
+                                latitude: location.coords.latitude,
+                                longitude: location.coords.longitude,
+                                timestamp: location.timestamp
+                            };
+                            addTrashLocation(locationData);
+                        } catch (error) {
+                            console.log('Error getting trash location:', error);
+                        }
+                    })();
+                }
+            }}
+        >
             <Entypo name="plus" size={35} color="black"/>
         </TouchableOpacity>
 
