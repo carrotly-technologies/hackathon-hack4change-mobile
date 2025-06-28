@@ -1,0 +1,26 @@
+query Events(
+  $input: EventFindManyInput!
+  $pagination: PaginationInput!
+  $sort: EventFindManySortInput!
+) {
+  events(input: $input, pagination: $pagination, sort: $sort) {
+    data {
+      id
+      name
+      time
+      place
+      localization
+      imageUrl
+      eventType
+      userIds
+      createdAt
+      updatedAt
+    }
+    metadata {
+      pageSize
+      currentPage
+      totalPages
+      totalCount
+    }
+  }
+}

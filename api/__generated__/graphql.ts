@@ -1,6 +1,5 @@
+import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import {gql} from '@apollo/client';
-
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -250,6 +249,7 @@ export type EventCreateInput = {
 };
 
 export type EventFindManyInput = {
+  date?: InputMaybe<Scalars['DateTime']['input']>;
   eventType?: InputMaybe<Array<EventType>>;
   localization?: InputMaybe<LocalizationInput>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -260,6 +260,7 @@ export type EventFindManyInput = {
 
 export type EventFindManySortInput = {
   createdAt?: InputMaybe<SortInput>;
+  date?: InputMaybe<SortInput>;
   eventType?: InputMaybe<SortInput>;
   name?: InputMaybe<SortInput>;
   time?: InputMaybe<SortInput>;
@@ -279,6 +280,7 @@ export type EventInput = {
 export type EventObject = {
   __typename?: 'EventObject';
   createdAt: Scalars['DateTime']['output'];
+  date: Scalars['DateTime']['output'];
   eventType: EventType;
   id: Scalars['ObjectID']['output'];
   imageUrl: Scalars['String']['output'];
@@ -724,6 +726,15 @@ export type UserPaginationResponse = {
   metadata: PaginationMetadata;
 };
 
+export type EventsQueryVariables = Exact<{
+  input: EventFindManyInput;
+  pagination: PaginationInput;
+  sort: EventFindManySortInput;
+}>;
+
+
+export type EventsQuery = { __typename?: 'Query', events: { __typename?: 'EventPaginationResponse', data: Array<{ __typename?: 'EventObject', id: any, name: string, time: any, place: string, localization: Array<number>, imageUrl: string, eventType: EventType, userIds: Array<string>, createdAt: any, updatedAt: any }>, metadata: { __typename?: 'PaginationMetadata', pageSize: number, currentPage: number, totalPages: number, totalCount: number } } };
+
 export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -732,24 +743,73 @@ export type QueryQuery = { __typename?: 'Query', minioTest: string };
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserQuery = {
-  __typename?: 'Query',
-  user?: {
-    __typename?: 'UserObject',
-    id: any,
-    email: string,
-    firstname: string,
-    lastname: string,
-    avatarUrl?: string | null
-  } | null
-};
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'UserObject', id: any, email: string, firstname: string, lastname: string, avatarUrl?: string | null } | null };
 
 
+export const EventsDocument = gql`
+    query Events($input: EventFindManyInput!, $pagination: PaginationInput!, $sort: EventFindManySortInput!) {
+  events(input: $input, pagination: $pagination, sort: $sort) {
+    data {
+      id
+      name
+      time
+      place
+      localization
+      imageUrl
+      eventType
+      userIds
+      createdAt
+      updatedAt
+    }
+    metadata {
+      pageSize
+      currentPage
+      totalPages
+      totalCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useEventsQuery__
+ *
+ * To run a query within a React component, call `useEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *      pagination: // value for 'pagination'
+ *      sort: // value for 'sort'
+ *   },
+ * });
+ */
+export function useEventsQuery(baseOptions: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables> & ({ variables: EventsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+      }
+export function useEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+        }
+export function useEventsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EventsQuery, EventsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
+        }
+export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
+export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
+export type EventsSuspenseQueryHookResult = ReturnType<typeof useEventsSuspenseQuery>;
+export type EventsQueryResult = Apollo.QueryResult<EventsQuery, EventsQueryVariables>;
 export const QueryDocument = gql`
     query Query {
-      minioTest
-    }
-`;
+  minioTest
+}
+    `;
 
 /**
  * __useQueryQuery__
@@ -767,32 +827,32 @@ export const QueryDocument = gql`
  * });
  */
 export function useQueryQuery(baseOptions?: Apollo.QueryHookOptions<QueryQuery, QueryQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+      }
 export function useQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QueryQuery, QueryQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+        }
 export function useQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<QueryQuery, QueryQueryVariables>) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-  return Apollo.useSuspenseQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
-}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+        }
 export type QueryQueryHookResult = ReturnType<typeof useQueryQuery>;
 export type QueryLazyQueryHookResult = ReturnType<typeof useQueryLazyQuery>;
 export type QuerySuspenseQueryHookResult = ReturnType<typeof useQuerySuspenseQuery>;
 export type QueryQueryResult = Apollo.QueryResult<QueryQuery, QueryQueryVariables>;
 export const UserDocument = gql`
-  query User {
-    user(input: {id: "685fc7347afcbf34e1fd67a6"}) {
-      id
-      email
-      firstname
-      lastname
-      avatarUrl
-    }
+    query User {
+  user(input: {id: "685fc7347afcbf34e1fd67a6"}) {
+    id
+    email
+    firstname
+    lastname
+    avatarUrl
   }
-`;
+}
+    `;
 
 /**
  * __useUserQuery__
@@ -810,20 +870,17 @@ export const UserDocument = gql`
  * });
  */
 export function useUserQuery(baseOptions?: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
-}
-
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+      }
 export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
-}
-
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        }
 export function useUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<UserQuery, UserQueryVariables>) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-  return Apollo.useSuspenseQuery<UserQuery, UserQueryVariables>(UserDocument, options);
-}
-
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        }
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserSuspenseQueryHookResult = ReturnType<typeof useUserSuspenseQuery>;

@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import { EventObject, useEventsQuery } from '@/api/__generated__/graphql';
+import { Image } from 'expo-image';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 
 const ScheduleApp = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -52,31 +54,15 @@ const ScheduleApp = () => {
 
     const weekDates = getWeekDates();
 
-    const events = [
-        {
-            id: 1,
-            title: 'Wydarzenie 1',
-            location: 'Lokalizacja',
-            startTime: '9:00',
-            endTime: null,
+    const { data } = useEventsQuery({
+        variables: {
+            pagination: {},
+            input: {},
+            sort: {}
         },
-        {
-            id: 2,
-            title: 'Wydarzenie 2',
-            location: 'Lokalizacja',
-            startTime: '9:00',
-            endTime: '17:00',
-        },
-        {
-            id: 3,
-            title: 'Wydarzenie 3',
-            location: 'Lokalizacja',
-            startTime: '9:00',
-            endTime: '17:00',
-        },
-    ];
+    });
 
-    const renderDayItem = (item: any, index: any) => (
+    const renderDayItem = (item: any, index: number) => (
         <TouchableOpacity
             key={index}
             style={[
@@ -101,30 +87,24 @@ const ScheduleApp = () => {
         </TouchableOpacity>
     );
 
-    const renderEventItem = (event: any) => (
+    const renderEventItem = (event: EventObject) => (
         <View key={event.id} style={styles.eventItem}>
             <View style={styles.eventIconContainer}>
-                <View style={styles.eventIcon}/>
+                <Image source={{ uri: event.imageUrl || 'https://via.placeholder.com/40' }} style={styles.eventIcon} />
             </View>
             <View style={styles.eventContent}>
-                <Text style={styles.eventTitle}>{event.title}</Text>
-                <Text style={styles.eventLocation}>{event.location}</Text>
-            </View>
-            <View style={styles.eventTimeContainer}>
-                <Text style={styles.eventTime}>{event.startTime}</Text>
-                {event.endTime && (
-                    <Text style={styles.eventEndTime}>do {event.endTime}</Text>
-                )}
+                <Text style={styles.eventTitle}>{event.name}</Text>
+                <Text style={styles.eventLocation}>{event.place}</Text>
             </View>
         </View>
     );
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5"/>
+            <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5" />
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
 
-            <View style={styles.header}>
+                <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigateWeek(-1)} style={styles.navButton}>
                         <Text style={styles.navButtonText}>←</Text>
                     </TouchableOpacity>
@@ -140,10 +120,10 @@ const ScheduleApp = () => {
                     {weekDates.map((item, index) => renderDayItem(item, index))}
                 </View>
 
-                <View style={styles.divider}/>
+                <View style={styles.divider} />
 
                 <View style={styles.eventsContainer}>
-                    {events.map(renderEventItem)}
+                    {data?.events.data?.map(renderEventItem)}
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -244,7 +224,6 @@ const styles = StyleSheet.create({
         height: 40,
         backgroundColor: '#d0d0d0',
         borderRadius: 8,
-        borderWidth: 2,
         borderColor: '#bbb',
     },
     eventContent: {
@@ -260,19 +239,6 @@ const styles = StyleSheet.create({
     eventLocation: {
         fontSize: 14,
         color: '#666',
-    },
-    eventTimeContainer: {
-        alignItems: 'flex-end',
-    },
-    eventTime: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    eventEndTime: {
-        fontSize: 12,
-        color: '#666',
-        marginTop: 2,
     },
 });
 
