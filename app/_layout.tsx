@@ -1,4 +1,3 @@
-import {DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
 import {Stack, usePathname} from 'expo-router';
 import React from "react";
@@ -34,13 +33,11 @@ const RootLayout = () => {
 
     return (
         <ApolloProvider client={client}>
-            <ThemeProvider value={DefaultTheme}>
                 <Stack screenOptions={{headerShown: false}}>
                     <Stack.Screen name="home" options={{title: 'Home', headerShown: false, gestureEnabled: false}}/>
                     <Stack.Screen name="activity"
                                   options={{title: 'Asset', headerShown: false, gestureEnabled: false}}/>
                 </Stack>
-            </ThemeProvider>
         </ApolloProvider>
     );
 }

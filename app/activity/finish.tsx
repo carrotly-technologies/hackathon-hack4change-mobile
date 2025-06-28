@@ -72,7 +72,7 @@ const FinishScreen = () => {
                     />
                 </View>
 
-                <TouchableOpacity style={styles.saveButton}>
+                <TouchableOpacity style={styles.saveButton} onPress={() => router.replace('/home/activity')}>
                     <Text style={styles.saveButtonText}>Zapisz aktywność</Text>
                 </TouchableOpacity>
             </ScrollView>
