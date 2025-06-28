@@ -1,11 +1,12 @@
-import {SafeAreaView, StyleSheet, TouchableOpacity} from "react-native";
+import {StyleSheet, TouchableOpacity} from "react-native";
 import Map from "@/components/screens/activity/Map";
 import {FontAwesome5} from "@expo/vector-icons";
 import React from "react";
 import ActivityDropdown from "@/components/screens/activity/ActivitiyDropdown";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const ActivityIndex = () => {
-    return <SafeAreaView>
+    return <SafeAreaView edges={["bottom", "left", "right"]} style={{paddingTop: 50, backgroundColor: "white"}}>
         <ActivityDropdown/>
         <Map/>
 

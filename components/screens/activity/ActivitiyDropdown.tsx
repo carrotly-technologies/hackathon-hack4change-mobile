@@ -1,22 +1,50 @@
 import React, {useEffect, useState} from "react";
-import DropDownPicker, {ValueType} from "react-native-dropdown-picker";
-import {StyleSheet, Text, View} from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
+import {ActivityIndicator, StyleSheet, View} from "react-native";
+import {ActivityType, useActivityTypesQuery} from "@/api/__generated__/graphql";
+import {FontAwesome5} from '@expo/vector-icons';
+
+
+const AssocMap: Array<Record<string, { label: string, icon: string }>> = [
+    {BIKING: {label: "Jazda na rowerze", icon: "biking"}},
+    {OTHER: {label: "Inne", icon: "question"}},
+    {RUNNING: {label: "Bieganie", icon: "running"}},
+    {WALKING: {label: "Spacer", icon: "walking"}},
+    {TREKKING: {label: "Trekking", icon: "hiking"}}
+];
 
 const ActivityDropdown = () => {
+
+    const {data, loading, error} = useActivityTypesQuery()
+
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<ValueType | null>(null);
-    const [items, setItems] = useState([
-        {label: 'Sprzątanie', value: 'cleaning'},
-        {label: 'Bieganie', value: 'running'}
-    ]);
+    const [value, setValue] = useState<ActivityType | null>(null);
+    const [items, setItems] = useState<{ label: string; value: ActivityType; icon: () => React.ReactElement }[]>([]);
+
 
     useEffect(() => {
-        setValue(items[0].value);
-    }, []);
+        if (data) {
+            setItems([...new Map(data.activities.data.map(item => {
+                const activityInfo = AssocMap.find(mappedItem => mappedItem[item.activityType])?.[item.activityType];
+                const activityLabel = activityInfo?.label || item.activityType;
+                const activityIcon = activityInfo?.icon || "question";
+                return [item.activityType, {
+                    label: activityLabel,
+                    value: item.activityType,
+                    icon: () => <FontAwesome5 name={activityIcon} size={18} color="black"/>
+                }];
+            })).values()]);
+
+            setValue(items[0]?.value || null);
+        }
+    }, [data]);
+
+    if (loading) {
+        return <ActivityIndicator/>
+    }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Typ aktywności</Text>
             <DropDownPicker
                 open={open}
                 value={value}
@@ -39,7 +67,17 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 20,
+        zIndex: 20,
         marginTop: 1,
+        borderRadius: 16,
+        elevation: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
     },
     label: {
         fontSize: 14,

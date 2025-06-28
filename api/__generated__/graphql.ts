@@ -783,6 +783,17 @@ export type ActivitiesQuery = {
   }
 };
 
+export type ActivityTypesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ActivityTypesQuery = {
+  __typename?: 'Query',
+  activities: {
+    __typename?: 'ActivityPaginationResponse',
+    data: Array<{ __typename?: 'ActivityObject', activityType: ActivityType }>
+  }
+};
+
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -949,21 +960,62 @@ export function useActivitiesQuery(baseOptions: Apollo.QueryHookOptions<Activiti
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
 }
-
 export function useActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables>) {
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
 }
-
 export function useActivitiesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables>) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
   return Apollo.useSuspenseQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
 }
-
 export type ActivitiesQueryHookResult = ReturnType<typeof useActivitiesQuery>;
 export type ActivitiesLazyQueryHookResult = ReturnType<typeof useActivitiesLazyQuery>;
 export type ActivitiesSuspenseQueryHookResult = ReturnType<typeof useActivitiesSuspenseQuery>;
 export type ActivitiesQueryResult = Apollo.QueryResult<ActivitiesQuery, ActivitiesQueryVariables>;
+export const ActivityTypesDocument = gql`
+  query ActivityTypes {
+    activities(input: {}, pagination: {}, sort: {}) {
+      data {
+        activityType
+      }
+    }
+  }
+`;
+
+/**
+ * __useActivityTypesQuery__
+ *
+ * To run a query within a React component, call `useActivityTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActivityTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityTypesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useActivityTypesQuery(baseOptions?: Apollo.QueryHookOptions<ActivityTypesQuery, ActivityTypesQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
+}
+
+export function useActivityTypesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivityTypesQuery, ActivityTypesQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
+}
+
+export function useActivityTypesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ActivityTypesQuery, ActivityTypesQueryVariables>) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+  return Apollo.useSuspenseQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
+}
+
+export type ActivityTypesQueryHookResult = ReturnType<typeof useActivityTypesQuery>;
+export type ActivityTypesLazyQueryHookResult = ReturnType<typeof useActivityTypesLazyQuery>;
+export type ActivityTypesSuspenseQueryHookResult = ReturnType<typeof useActivityTypesSuspenseQuery>;
+export type ActivityTypesQueryResult = Apollo.QueryResult<ActivityTypesQuery, ActivityTypesQueryVariables>;
 export const UserDocument = gql`
     query User {
   user(input: {id: "685fc7347afcbf34e1fd67a6"}) {

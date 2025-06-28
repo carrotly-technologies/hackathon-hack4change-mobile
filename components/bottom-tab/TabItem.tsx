@@ -5,6 +5,7 @@ import usePath from "@/utils/hooks/usePath";
 import {getPathXCenterByIndex} from "@/utils/constants/Path";
 import {SCREEN_WIDTH} from "@/utils/constants/screen";
 import {IconProps} from "@/utils/types";
+import {usePathname} from "expo-router";
 
 
 export type TabProps = {
@@ -24,6 +25,7 @@ const TabItem: FC<TabProps> = ({
                                    onTabPress
                                }) => {
     const {curvedPaths} = usePath(5);
+    const pathname = usePathname()
     const animatedActiveIndex = useSharedValue(activeIndex);
     const iconPosition = getPathXCenterByIndex(curvedPaths, index);
     const labelPosition = getPathXCenterByIndex(curvedPaths, index);
@@ -63,6 +65,7 @@ const TabItem: FC<TabProps> = ({
         return <Animated.View ref={ref}>{icon?.({
             color: isSelected ? 'white' : 'rgb(13,26,61)',
             size: ICON_SIZE,
+            alternative: pathname === "/home/activity" ? "play" : undefined,
         }) || <></>}
         </Animated.View>
     });

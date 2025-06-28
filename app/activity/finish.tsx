@@ -1,9 +1,10 @@
-import {SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {useActivityStore} from "@/store/activity.store";
 import React, {useEffect, useState} from "react";
 import ActivitiyDropdown from "@/components/screens/activity/ActivitiyDropdown";
 import Map from "@/components/screens/activity/Map";
 import {router} from "expo-router";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const FinishScreen = () => {
     const {
@@ -39,7 +40,7 @@ const FinishScreen = () => {
     }, []);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
             <ScrollView style={styles.scrollContainer}>
                 <TouchableOpacity style={styles.header} onPress={() => router.replace('/home/activity')}>
                     <Text style={styles.headerTitle}>Zapisz aktywność</Text>

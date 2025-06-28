@@ -1,9 +1,10 @@
-import {Tabs} from 'expo-router';
+import {router, Tabs} from 'expo-router';
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import React from "react";
 import {Octicons} from "@expo/vector-icons";
 import CustomBottomTab from "@/components/bottom-tab/CustomBottomTab";
 import {TabScreen} from "@/utils/types";
+import {TouchableOpacity} from "react-native";
 
 const TabScreens: TabScreen[] = [
     {
@@ -19,7 +20,16 @@ const TabScreens: TabScreen[] = [
     {
         name: "activity",
         title: "Rozpocznij",
-        icon: (props) => <Octicons name="plus-circle" size={24} color={props.color}/>
+        icon: (props) => {
+            if (props.alternative) {
+                return <TouchableOpacity onPress={() => {
+                    router.replace("/activity")
+                }}>
+                    <Octicons name={"play"} size={24} color={props.color}/>
+                </TouchableOpacity>;
+            }
+            return <Octicons name={"plus-circle"} size={24} color={props.color}/>;
+        }
     },
     {
         name: "events",
