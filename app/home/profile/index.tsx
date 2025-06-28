@@ -4,7 +4,6 @@ import {Ionicons, Octicons} from '@expo/vector-icons';
 import {router} from 'expo-router';
 
 const ProfileScreen: React.FC = () => {
-    // Mock user data
     const user = {
         name: 'Jan Kowalski',
         username: '@jankowalski',
@@ -20,7 +19,6 @@ const ProfileScreen: React.FC = () => {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                {/* Header with back button */}
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
@@ -32,7 +30,6 @@ const ProfileScreen: React.FC = () => {
                     <View style={styles.headerRight}/>
                 </View>
 
-                {/* Profile Info Section */}
                 <View style={styles.profileSection}>
                     <View style={styles.avatarContainer}>
                         <View style={styles.avatar}>
@@ -52,7 +49,6 @@ const ProfileScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Stats Section */}
                 <View style={styles.statsContainer}>
                     <View style={styles.statItem}>
                         <Text style={styles.statValue}>{user.stats.activities}</Text>
@@ -72,11 +68,9 @@ const ProfileScreen: React.FC = () => {
                     </View>
                 </View>
 
-                {/* Recent Activities Section */}
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Ostatnie aktywności</Text>
 
-                    {/* Activity Card */}
                     <View style={styles.activityCard}>
                         <View style={styles.activityHeader}>
                             <View style={styles.activityType}>
@@ -101,7 +95,6 @@ const ProfileScreen: React.FC = () => {
                         </View>
                     </View>
 
-                    {/* Activity Card */}
                     <View style={styles.activityCard}>
                         <View style={styles.activityHeader}>
                             <View style={[styles.activityType, {backgroundColor: '#28a745'}]}>
@@ -127,7 +120,6 @@ const ProfileScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Achievements Section */}
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Osiągnięcia</Text>
 
@@ -159,7 +151,6 @@ const ProfileScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Bottom padding */}
                 <View style={{height: 40}}/>
             </ScrollView>
         </SafeAreaView>

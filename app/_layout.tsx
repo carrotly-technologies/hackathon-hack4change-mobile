@@ -1,11 +1,10 @@
 import {useFonts} from 'expo-font';
-import {Stack, usePathname} from 'expo-router';
+import {Stack} from 'expo-router';
 import React from "react";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
-import {useActivityStore} from "@/store/activity.store";
 
 const client = new ApolloClient({
-    uri: "",
+    uri: "https://h4c-api.rabbithole.carrotly.tech/graphql",
     cache: new InMemoryCache(),
     defaultOptions: {
         watchQuery: {
@@ -23,9 +22,6 @@ const RootLayout = () => {
     const [loaded] = useFonts({
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     });
-
-    const path = usePathname();
-    const {} = useActivityStore();
 
     if (!loaded) {
         return null;

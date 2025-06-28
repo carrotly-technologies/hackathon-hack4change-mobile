@@ -123,8 +123,8 @@ const ScheduleApp = () => {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5"/>
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                {/* Header */}
-                <View style={styles.header}>
+
+            <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigateWeek(-1)} style={styles.navButton}>
                         <Text style={styles.navButtonText}>←</Text>
                     </TouchableOpacity>
@@ -136,15 +136,12 @@ const ScheduleApp = () => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Week Days */}
                 <View style={styles.weekContainer}>
                     {weekDates.map((item, index) => renderDayItem(item, index))}
                 </View>
 
-                {/* Divider */}
                 <View style={styles.divider}/>
 
-                {/* Events List */}
                 <View style={styles.eventsContainer}>
                     {events.map(renderEventItem)}
                 </View>

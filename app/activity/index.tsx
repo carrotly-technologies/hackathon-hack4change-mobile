@@ -94,7 +94,6 @@ const ActivityIndex = () => {
                 );
             })();
         } else if (locationSubscription.current) {
-            // Stop location tracking when not playing or paused
             locationSubscription.current.remove();
             locationSubscription.current = null;
         }
@@ -113,7 +112,6 @@ const ActivityIndex = () => {
                 incrementElapsedTime();
             }, 1000);
         } else if (timerRef.current) {
-            // Clear the timer when not playing or paused
             clearInterval(timerRef.current);
             timerRef.current = null;
         }
@@ -154,11 +152,9 @@ const ActivityIndex = () => {
             style={styles.plusButtonContainer}
             onPress={() => {
                 incrementTrashCount();
-                // Save the current location of the trash
                 if (currentLocation) {
                     addTrashLocation(currentLocation);
                 } else {
-                    // If no current location, try to get one
                     (async () => {
                         try {
                             const location = await Location.getCurrentPositionAsync({

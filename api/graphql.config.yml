@@ -1,5 +1,5 @@
 schema:
-  - './api/schema.graphql'
+  - 'https://h4c-api.rabbithole.carrotly.tech/graphql'
 documents:
   - './**/*.graphql'
 generates:
