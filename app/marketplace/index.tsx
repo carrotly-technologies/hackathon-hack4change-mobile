@@ -43,7 +43,7 @@ const MarketplaceIndex = () => {
                         <Text style={styles.titleText}>
                             {marketplace.name}
                         </Text>
-                        <TouchableOpacity onPress={() => router.replace(`/marketplace/${marketplace.id}` as const)}>
+                        <TouchableOpacity onPress={() => router.push(`/marketplace/${marketplace.id}` as const)}>
                             <Entypo name="chevron-with-circle-right" size={35} color="#437454"/>
                         </TouchableOpacity>
                     </View>

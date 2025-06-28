@@ -21,7 +21,7 @@ const ProfileScreen = () => {
                     <View style={styles.statCard}>
                         <View style={styles.coinMarketHeader}>
                             <Text style={styles.statLabel}>Coin market</Text>
-                            <TouchableOpacity onPress={() => router.replace("/marketplace")}>
+                            <TouchableOpacity onPress={() => router.push("/marketplace")}>
                                 <Entypo name="chevron-with-circle-right" size={25} color="#437454"/>
                             </TouchableOpacity>
                         </View>
