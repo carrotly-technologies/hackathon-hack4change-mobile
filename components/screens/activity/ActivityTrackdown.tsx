@@ -35,23 +35,34 @@ const ActivityTrackdown = () => {
 
 const styles = StyleSheet.create({
     container: {
-        height: 75,
+        height: 90,
         flexDirection: "row",
         justifyContent: "space-around",
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e9ecef',
+        paddingVertical: 10,
     },
     entryContainer: {
         justifyContent: "center",
         alignItems: "center",
+        paddingHorizontal: 15,
     },
     header: {
-        fontSize: 18,
+        fontSize: 16,
+        color: '#6c757d',
+        marginBottom: 5,
+        fontWeight: '500',
     },
     value: {
-        fontSize: 32
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#000',
     },
     unit: {
         fontSize: 18,
-        color: '#666'
+        color: '#6c757d',
+        fontWeight: 'normal',
     }
 })
 

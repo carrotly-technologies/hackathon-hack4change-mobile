@@ -19,19 +19,19 @@ const MemoFeed: FC<MemoFeedProps> = ({feed}) => {
                 <View style={styles.memoParametersStyle}>
                     <View style={styles.memoParameterDetailsStyle}>
                         <Text style={styles.memoParameterHeader}>Dystans</Text>
-                        <Text>{item.length.toFixed(1)}</Text>
+                        <Text style={styles.memoParameterValue}>{item.length.toFixed(1)} km</Text>
                     </View>
                     <View style={styles.memoParameterDetailsStyle}>
                         <Text style={styles.memoParameterHeader}>Ilość śmieci</Text>
-                        <Text>{(item.points / 10).toFixed(1)}</Text>
+                        <Text style={styles.memoParameterValue}>{(item.points / 10).toFixed(1)}</Text>
                     </View>
                     <View style={styles.memoParameterDetailsStyle}>
                         <Text style={styles.memoParameterHeader}>Punkty</Text>
-                        <Text>{item.points}</Text>
+                        <Text style={styles.memoParameterValue}>{item.points}</Text>
                     </View>
                     <View style={styles.memoParameterDetailsStyle}>
                         <Text style={styles.memoParameterHeader}>Osiągnięcia</Text>
-                        <Text>{item.achievements}</Text>
+                        <Text style={styles.memoParameterValue}>{item.achievements}</Text>
                     </View>
                 </View>
                 <Image
@@ -51,32 +51,49 @@ const styles = StyleSheet.create({
     avatarContainer: {
         flexDirection: "row",
         gap: 10,
+        alignItems: "center",
+        marginBottom: 10,
     },
     avatarStyle: {
         borderWidth: 1,
-        borderRadius: 50
+        borderRadius: 50,
+        borderColor: "#e9ecef",
     },
     usernameContainer: {
         flexDirection: "column",
     },
     memoParameterDetailsStyle: {
         flexDirection: "column",
+        alignItems: "center",
     },
     usernameTextStyle: {
         fontSize: 16,
+        fontWeight: "600",
+        color: "#000",
     },
     memoParametersStyle: {
         flexDirection: "row",
         justifyContent: "space-between",
+        backgroundColor: "#f8f9fa",
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 10,
     },
     memoParameterHeader: {
         fontSize: 12,
         fontWeight: "bold",
+        color: "#6c757d",
+        marginBottom: 5,
+    },
+    memoParameterValue: {
+        fontSize: 16,
+        fontWeight: "600",
+        color: "#000",
     },
     image: {
-        width: "80%",
-        height: 130,
-        margin: "auto"
+        width: "100%",
+        height: 150,
+        borderRadius: 8,
     }
 })
 

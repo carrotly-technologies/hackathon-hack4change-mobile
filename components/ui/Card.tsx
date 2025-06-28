@@ -8,10 +8,18 @@ const Card = ({children, styles}: { children: React.ReactNode, styles: ViewStyle
 
 const styling = StyleSheet.create({
     container: {
-        borderColor: "grey",
-        borderRadius: 16,
-        padding: 20,
-        borderWidth: 1,
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 15,
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
     }
 })
 

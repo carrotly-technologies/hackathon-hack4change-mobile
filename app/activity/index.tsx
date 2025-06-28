@@ -215,14 +215,21 @@ const styles = StyleSheet.create({
         zIndex: 20,
         bottom: 120,
         left: 10,
-        backgroundColor: "white",
-        padding: 5,
-        borderRadius: 10,
-        elevation: 10,
+        backgroundColor: "#fff",
+        padding: 12,
+        borderRadius: 15,
+        elevation: 5,
         alignItems: "center",
         justifyContent: "center",
-        borderColor: "black",
-        borderWidth: 5
+        borderColor: "#6f42c1",
+        borderWidth: 2,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
     },
     bottomButtonsContainer: {
         position: "absolute",
@@ -232,27 +239,34 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        gap: 10,
+        gap: 15,
         paddingHorizontal: 20
     },
     circleButton: {
-        backgroundColor: "white",
-        borderColor: "black",
+        backgroundColor: "#fff",
+        borderColor: "#e9ecef",
         borderWidth: 1,
-        width: 100,
-        height: 100,
-        borderRadius: 100,
+        width: 80,
+        height: 80,
+        borderRadius: 40,
         alignItems: "center",
         justifyContent: "center",
-        elevation: 5
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
     },
     activeButton: {
-        backgroundColor: "green",
-        borderColor: "white",
+        backgroundColor: "#28a745",
+        borderColor: "#fff",
     },
     pausedButton: {
-        backgroundColor: "orange",
-        borderColor: "white",
+        backgroundColor: "#fd7e14",
+        borderColor: "#fff",
     }
 })
 
