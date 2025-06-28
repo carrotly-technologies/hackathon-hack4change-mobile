@@ -1,6 +1,5 @@
+import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import {gql} from '@apollo/client';
-
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -749,55 +748,24 @@ export type ActivitiesQueryVariables = Exact<{
 }>;
 
 
-export type ActivitiesQuery = {
-  __typename?: 'Query',
-  activities: {
-    __typename?: 'ActivityPaginationResponse',
-    data: Array<{
-      __typename?: 'ActivityObject',
-      activityType: ActivityType,
-      createdAt: any,
-      currentDuration?: number | null,
-      description: string,
-      distance: number,
-      durationTime: number,
-      endTime?: any | null,
-      id: any,
-      imageUrls: Array<string>,
-      name: string,
-      points: number,
-      startTime?: any | null,
-      trashCount: number,
-      updatedAt: any,
-      userId: any,
-      path: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
-      trashLocations: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
-      user?: {
-        __typename?: 'UserObject',
-        avatarUrl?: string | null,
-        id: any,
-        firstname: string,
-        lastname: string
-      } | null
-    }>
-  }
-};
+export type ActivitiesQuery = { __typename?: 'Query', activities: { __typename?: 'ActivityPaginationResponse', data: Array<{ __typename?: 'ActivityObject', activityType: ActivityType, createdAt: any, currentDuration?: number | null, description: string, distance: number, durationTime: number, endTime?: any | null, id: any, imageUrls: Array<string>, name: string, points: number, startTime?: any | null, trashCount: number, updatedAt: any, userId: any, path: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>, trashLocations: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>, user?: { __typename?: 'UserObject', avatarUrl?: string | null, id: any, firstname: string, lastname: string } | null }> } };
 
 export type ActivityTypesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ActivityTypesQuery = {
-  __typename?: 'Query',
-  activities: {
-    __typename?: 'ActivityPaginationResponse',
-    data: Array<{ __typename?: 'ActivityObject', activityType: ActivityType }>
-  }
-};
+export type ActivityTypesQuery = { __typename?: 'Query', activities: { __typename?: 'ActivityPaginationResponse', data: Array<{ __typename?: 'ActivityObject', activityType: ActivityType }> } };
 
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'UserObject', id: any, email: string, firstname: string, lastname: string, avatarUrl?: string | null } | null };
+
+export type RankingQueryVariables = Exact<{
+  input: LeaderboardFindInput;
+}>;
+
+
+export type RankingQuery = { __typename?: 'Query', leaderboard: Array<{ __typename?: 'LeaderboardEntryObject', id: any, firstname: string, lastname: string, activityPoints: number, avatarUrl?: string | null, rank: number, challengePoints: number, totalPoints: number }> };
 
 
 export const EventsDocument = gql`
@@ -898,42 +866,42 @@ export type QueryLazyQueryHookResult = ReturnType<typeof useQueryLazyQuery>;
 export type QuerySuspenseQueryHookResult = ReturnType<typeof useQuerySuspenseQuery>;
 export type QueryQueryResult = Apollo.QueryResult<QueryQuery, QueryQueryVariables>;
 export const ActivitiesDocument = gql`
-  query Activities($input: ActivityFindManyInput!, $pagination: PaginationInput!, $sort: ActivityFindManySortInput!) {
-    activities(input: $input, pagination: $pagination, sort: $sort) {
-      data {
-        activityType
-        createdAt
-        currentDuration
-        description
-        distance
-        durationTime
-        endTime
-        id
-        imageUrls
-        name
-        path {
-          lat
-          lon
-        }
-        points
-        startTime
-        trashCount
-        trashLocations {
-          lat
-          lon
-        }
-        updatedAt
-        user {
-          avatarUrl
-          id
-          firstname
-          lastname
-        }
-        userId
+    query Activities($input: ActivityFindManyInput!, $pagination: PaginationInput!, $sort: ActivityFindManySortInput!) {
+  activities(input: $input, pagination: $pagination, sort: $sort) {
+    data {
+      activityType
+      createdAt
+      currentDuration
+      description
+      distance
+      durationTime
+      endTime
+      id
+      imageUrls
+      name
+      path {
+        lat
+        lon
       }
+      points
+      startTime
+      trashCount
+      trashLocations {
+        lat
+        lon
+      }
+      updatedAt
+      user {
+        avatarUrl
+        id
+        firstname
+        lastname
+      }
+      userId
     }
   }
-`;
+}
+    `;
 
 /**
  * __useActivitiesQuery__
@@ -953,34 +921,31 @@ export const ActivitiesDocument = gql`
  *   },
  * });
  */
-export function useActivitiesQuery(baseOptions: Apollo.QueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables> & ({
-  variables: ActivitiesQueryVariables;
-  skip?: boolean;
-} | { skip: boolean; })) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
-}
+export function useActivitiesQuery(baseOptions: Apollo.QueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables> & ({ variables: ActivitiesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
+      }
 export function useActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
+        }
 export function useActivitiesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables>) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-  return Apollo.useSuspenseQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
-}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
+        }
 export type ActivitiesQueryHookResult = ReturnType<typeof useActivitiesQuery>;
 export type ActivitiesLazyQueryHookResult = ReturnType<typeof useActivitiesLazyQuery>;
 export type ActivitiesSuspenseQueryHookResult = ReturnType<typeof useActivitiesSuspenseQuery>;
 export type ActivitiesQueryResult = Apollo.QueryResult<ActivitiesQuery, ActivitiesQueryVariables>;
 export const ActivityTypesDocument = gql`
-  query ActivityTypes {
-    activities(input: {}, pagination: {}, sort: {}) {
-      data {
-        activityType
-      }
+    query ActivityTypes {
+  activities(input: {}, pagination: {}, sort: {}) {
+    data {
+      activityType
     }
   }
-`;
+}
+    `;
 
 /**
  * __useActivityTypesQuery__
@@ -998,20 +963,17 @@ export const ActivityTypesDocument = gql`
  * });
  */
 export function useActivityTypesQuery(baseOptions?: Apollo.QueryHookOptions<ActivityTypesQuery, ActivityTypesQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
-}
-
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
+      }
 export function useActivityTypesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivityTypesQuery, ActivityTypesQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
-}
-
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
+        }
 export function useActivityTypesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ActivityTypesQuery, ActivityTypesQueryVariables>) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-  return Apollo.useSuspenseQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
-}
-
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ActivityTypesQuery, ActivityTypesQueryVariables>(ActivityTypesDocument, options);
+        }
 export type ActivityTypesQueryHookResult = ReturnType<typeof useActivityTypesQuery>;
 export type ActivityTypesLazyQueryHookResult = ReturnType<typeof useActivityTypesLazyQuery>;
 export type ActivityTypesSuspenseQueryHookResult = ReturnType<typeof useActivityTypesSuspenseQuery>;
@@ -1059,3 +1021,50 @@ export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserSuspenseQueryHookResult = ReturnType<typeof useUserSuspenseQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export const RankingDocument = gql`
+    query Ranking($input: LeaderboardFindInput!) {
+  leaderboard(input: $input) {
+    id
+    firstname
+    lastname
+    activityPoints
+    avatarUrl
+    rank
+    challengePoints
+    totalPoints
+  }
+}
+    `;
+
+/**
+ * __useRankingQuery__
+ *
+ * To run a query within a React component, call `useRankingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRankingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRankingQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRankingQuery(baseOptions: Apollo.QueryHookOptions<RankingQuery, RankingQueryVariables> & ({ variables: RankingQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RankingQuery, RankingQueryVariables>(RankingDocument, options);
+      }
+export function useRankingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RankingQuery, RankingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RankingQuery, RankingQueryVariables>(RankingDocument, options);
+        }
+export function useRankingSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<RankingQuery, RankingQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RankingQuery, RankingQueryVariables>(RankingDocument, options);
+        }
+export type RankingQueryHookResult = ReturnType<typeof useRankingQuery>;
+export type RankingLazyQueryHookResult = ReturnType<typeof useRankingLazyQuery>;
+export type RankingSuspenseQueryHookResult = ReturnType<typeof useRankingSuspenseQuery>;
+export type RankingQueryResult = Apollo.QueryResult<RankingQuery, RankingQueryVariables>;

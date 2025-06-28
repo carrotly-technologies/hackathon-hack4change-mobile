@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import { useRankingQuery } from '@/api/__generated__/graphql';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 
 type User = {
     id: number;
@@ -11,50 +12,61 @@ type User = {
 const RankingScreen: React.FC = () => {
     const [selectedPeriod, setSelectedPeriod] = useState<'Tygodniowe' | 'Ogólne'>('Tygodniowe');
 
-    const topUsers: User[] = [
-        {id: 2, name: 'User name', points: 123, position: 2},
-        {id: 1, name: 'User name', points: 123, position: 1},
-        {id: 3, name: 'User name', points: 123, position: 3},
-    ];
+    const { data, refetch } = useRankingQuery({
+        variables: {
+            input: {
+                limit: 10,
+            }
+        }
+    });
 
-    const otherUsers: User[] = [
-        {id: 4, name: 'User name', points: 123, position: 4},
-        {id: 5, name: 'User name', points: 123, position: 5},
-        {id: 6, name: 'User name', points: 123, position: 6},
-    ];
+    useEffect(() => {
+        refetch({
+            input: {
+                startDate: selectedPeriod === 'Tygodniowe' ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
+                endDate: selectedPeriod === 'Tygodniowe' ? new Date() : null,
+                limit: 10,
+            }
+        })
+    }, [selectedPeriod])
 
-    const UserAvatar: React.FC<{ size?: number }> = ({size = 60}) => (
-        <View style={[styles.avatar, {width: size, height: size}]}>
+    const topUsers: User[] = data?.leaderboard?.slice(0, 3).map((v, i) => ({ id: v.id, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 1 })) || [];
+    const otherUsers: User[] = data?.leaderboard?.slice(3).map((v, i) => ({ id: v.id, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 4 })) || [];
+
+    const UserAvatar: React.FC<{ size?: number }> = ({ size = 60 }) => (
+        <View style={[styles.avatar, { width: size, height: size }]}>
             <View style={styles.avatarIcon}>
-                <View style={styles.head}/>
-                <View style={styles.body}/>
+                <View style={styles.head} />
+                <View style={styles.body} />
             </View>
         </View>
     );
 
-    const PodiumItem: React.FC<{ user: User; height: number }> = ({user, height}) => (
-        <View style={[styles.podiumItem, {height}]}>
-            <UserAvatar size={user.position === 1 ? 70 : 60}/>
+    const PodiumItem: React.FC<{ user: User; height: number }> = ({ user, height }) => (
+        <View style={[styles.podiumItem, { height }]}>
+            <UserAvatar size={user.position === 1 ? 70 : 60} />
             <Text style={styles.userName}>{user.name}</Text>
             <Text style={styles.userPoints}>{user.points} points</Text>
-            <View style={[styles.podiumBase, {height}]}>
+            <View style={[styles.podiumBase, { height }]}>
                 <Text style={styles.positionNumber}>{user.position}</Text>
             </View>
         </View>
     );
 
-    const ListItem: React.FC<{ user: User }> = ({user}) => (
+    const ListItem: React.FC<{ user: User }> = ({ user }) => (
         <View style={styles.listItem}>
             <View style={styles.positionCircle}>
                 <Text style={styles.positionText}>{user.position}</Text>
             </View>
-            <UserAvatar size={50}/>
+            <UserAvatar size={50} />
             <View style={styles.userInfo}>
                 <Text style={styles.listUserName}>{user.name}</Text>
                 <Text style={styles.listUserPoints}>{user.points} points</Text>
             </View>
         </View>
     );
+
+    console.log({ topUsers, otherUsers });
 
     return (
         <SafeAreaView style={styles.container}>
@@ -95,14 +107,14 @@ const RankingScreen: React.FC = () => {
                 </View>
 
                 <View style={styles.podiumContainer}>
-                    <PodiumItem user={topUsers[0]} height={120}/>
-                    <PodiumItem user={topUsers[1]} height={150}/>
-                    <PodiumItem user={topUsers[2]} height={100}/>
+                    {topUsers[0] && <PodiumItem user={topUsers[0]} height={120} />}
+                    {topUsers[1] && <PodiumItem user={topUsers[1]} height={150} />}
+                    {topUsers[2] && <PodiumItem user={topUsers[2]} height={100} />}
                 </View>
 
                 <View style={styles.listContainer}>
                     {otherUsers.map((user) => (
-                        <ListItem key={user.id} user={user}/>
+                        <ListItem key={user.id} user={user} />
                     ))}
                 </View>
             </ScrollView>

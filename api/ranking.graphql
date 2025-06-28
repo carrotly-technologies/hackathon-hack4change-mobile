@@ -1,0 +1,12 @@
+query Ranking($input: LeaderboardFindInput!) {
+  leaderboard(input: $input) {
+    id
+    firstname
+    lastname
+    activityPoints
+    avatarUrl
+    rank
+    challengePoints
+    totalPoints
+  }
+}
