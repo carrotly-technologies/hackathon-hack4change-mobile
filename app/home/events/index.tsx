@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -176,55 +177,62 @@ const ScheduleApp = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ flex: 1 }}>
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#e0e0e0',
-                    paddingHorizontal: 16,
-                    height: 76,
-                }}>
-                    <View style={{ width: 32 }} />
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#333', textAlign: 'center', flex: 1 }}>
-                        Nadchodzące wydarzenia
-                    </Text>
-                    <Pressable onPress={() => setFilterModalVisible((v) => !v)}>
-                        <View style={{ width: 32, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Ionicons name="filter-circle-outline" size={32} />
-                        </View>
-                    </Pressable>
-                </View>
-
-                <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                    <View style={styles.header}>
-                        <TouchableOpacity onPress={() => {
-                            navigateWeek(-1);
-                            setFilterModalVisible((v) => !v);
-                        }} style={styles.navButton}>
-                            <Text style={styles.navButtonText}>←</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.monthTitle}>
-                            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+            <LinearGradient
+                start={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                colors={['#eeeeee', '#d1e8b0']}
+                style={{ flex: 1 }}
+            >
+                <View style={{ flex: 1 }}>
+                    <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#e0e0e0',
+                        paddingHorizontal: 16,
+                        height: 76,
+                    }}>
+                        <View style={{ width: 32 }} />
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#333', textAlign: 'center', flex: 1 }}>
+                            Nadchodzące wydarzenia
                         </Text>
-                        <TouchableOpacity onPress={() => navigateWeek(1)} style={styles.navButton}>
-                            <Text style={styles.navButtonText}>→</Text>
-                        </TouchableOpacity>
+                        <Pressable onPress={() => setFilterModalVisible((v) => !v)}>
+                            <View style={{ width: 32, flexDirection: 'row', justifyContent: 'center' }}>
+                                <Ionicons name="filter-circle-outline" size={32} />
+                            </View>
+                        </Pressable>
                     </View>
 
-                    <View style={styles.weekContainer}>
-                        {weekDates.map((item, index) => renderDayItem(item, index))}
-                    </View>
+                    <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                        <View style={styles.header}>
+                            <TouchableOpacity onPress={() => {
+                                navigateWeek(-1);
+                                setFilterModalVisible((v) => !v);
+                            }} style={styles.navButton}>
+                                <Text style={styles.navButtonText}>←</Text>
+                            </TouchableOpacity>
+                            <Text style={styles.monthTitle}>
+                                {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+                            </Text>
+                            <TouchableOpacity onPress={() => navigateWeek(1)} style={styles.navButton}>
+                                <Text style={styles.navButtonText}>→</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                    <View style={styles.divider} />
+                        <View style={styles.weekContainer}>
+                            {weekDates.map((item, index) => renderDayItem(item, index))}
+                        </View>
 
-                    <View style={styles.eventsContainer}>
-                        {data?.events.data?.map(renderEventItem)}
-                    </View>
-                </ScrollView>
-                {filterModalVisible && renderFilterModal()}
-            </View>
+                        <View style={styles.divider} />
+
+                        <View style={styles.eventsContainer}>
+                            {data?.events.data?.map(renderEventItem)}
+                        </View>
+                    </ScrollView>
+                    {filterModalVisible && renderFilterModal()}
+                </View>
+            </LinearGradient>
         </SafeAreaView>
     );
 };
