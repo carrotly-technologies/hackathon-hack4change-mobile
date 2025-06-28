@@ -6,6 +6,7 @@ import Map from "@/components/screens/activity/Map";
 import {router} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useActivityEndMutation} from "@/api/__generated__/graphql";
+import Card from "@/components/ui/Card";
 
 const FinishScreen = () => {
     const {
@@ -18,7 +19,10 @@ const FinishScreen = () => {
         trashCount,
         resetTrashCount,
         activityId,
-        resetTrashLocations
+        locations,
+        trashLocations,
+        resetTrashLocations,
+        type
     } = useActivityStore();
     const [activityName, setActivityName] = useState("");
     const [description, setDescription] = useState("");
@@ -41,14 +45,17 @@ const FinishScreen = () => {
         setPlaying(false);
     }, [setPlaying]);
 
-    // console.log(data, loading, error);
-
     useEffect(() => {
         if (data) {
-            console.log(data);
             router.replace('/home/activity');
         }
     }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            router.replace('/home/activity');
+        }
+    }, [error]);
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
@@ -88,7 +95,14 @@ const FinishScreen = () => {
 
                 <View style={styles.mediaSection}>
                     <View style={styles.mapContainer}>
-                        <Map/>
+                        <Map points={trashLocations} paths={locations.map(p => ({
+                            coordinates: [{
+                                latitude: p.latitude,
+                                longitude: p.longitude
+                            }],
+                            color: "red",
+                            width: 10
+                        }))}/>
                     </View>
                     <View style={styles.photoContainer}>
                         <View style={styles.photoPlaceholder}>
@@ -97,10 +111,10 @@ const FinishScreen = () => {
                     </View>
                 </View>
 
-                <ActivitiyDropdown/>
+                <ActivitiyDropdown defaultValue={type || undefined}/>
 
-                <View style={styles.descriptionSection}>
-                    <Text style={styles.descriptionLabel}>Opis</Text>
+                <Card styles={{marginVertical: 20}}>
+                    <Text style={styles.descriptionLabel}>Szczegóły</Text>
                     <TextInput
                         style={styles.descriptionInput}
                         placeholder="Napisz coś o tej aktywności, możesz kogoś również oznaczyć"
@@ -109,33 +123,35 @@ const FinishScreen = () => {
                         multiline
                         placeholderTextColor="#999"
                     />
-                </View>
+                </Card>
 
-                <TouchableOpacity
-                    style={styles.saveButton}
-                    onPress={() => {
-                        setPlaying(false);
-                        setPaused(false);
-                        setElapsedTime(0);
-                        resetLocations();
-                        resetTrashCount();
-                        resetTrashLocations();
+                <View style={styles.bottomSheet}>
+                    <TouchableOpacity
+                        style={styles.saveButton}
+                        onPress={() => {
+                            setPlaying(false);
+                            setPaused(false);
+                            setElapsedTime(0);
+                            resetLocations();
+                            resetTrashCount();
+                            resetTrashLocations();
 
-                        endActivity({
-                            variables: {
-                                input: {
-                                    activityId: activityId,
-                                    description: description,
-                                    name: activityName,
-                                    distance: distance,
-                                    imageUrls: []
+                            endActivity({
+                                variables: {
+                                    input: {
+                                        activityId: activityId,
+                                        description: description,
+                                        name: activityName,
+                                        distance: distance,
+                                        imageUrls: []
+                                    }
                                 }
-                            }
-                        });
-                    }}
-                >
-                    <Text style={styles.saveButtonText}>Zapisz aktywność</Text>
-                </TouchableOpacity>
+                            });
+                        }}
+                    >
+                        <Text style={styles.saveButtonText}>Zapisz aktywność</Text>
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -144,6 +160,7 @@ const FinishScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 50,
         backgroundColor: '#f8f9fa',
     },
     scrollContainer: {
@@ -188,14 +205,18 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         padding: 20,
         marginTop: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     statItem: {
         width: '50%',
         paddingVertical: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     statLabel: {
         fontSize: 16,
-        color: '#6c757d',
+        color: 'black',
         marginBottom: 5,
         fontWeight: '500',
     },
@@ -214,16 +235,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 20,
         marginTop: 1,
+        gap: 10
     },
     mapContainer: {
         flex: 1,
-        marginRight: 10,
         height: 120,
         borderRadius: 8,
         overflow: 'hidden',
     },
     photoContainer: {
-        width: 120,
+        flex: 1
     },
     photoPlaceholder: {
         height: 120,
@@ -244,8 +265,7 @@ const styles = StyleSheet.create({
         marginTop: 1,
     },
     descriptionLabel: {
-        fontSize: 14,
-        color: '#6c757d',
+        fontSize: 16,
         marginBottom: 8,
         fontWeight: '500',
     },
@@ -261,9 +281,10 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     saveButton: {
-        backgroundColor: '#6f42c1',
+        backgroundColor: '#1D6936',
         margin: 20,
         borderRadius: 20,
+        width: '80%',
         paddingVertical: 15,
         alignItems: 'center',
         shadowColor: '#000',
@@ -273,13 +294,22 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 2,
+        elevation: 15,
     },
     saveButtonText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
     },
+    bottomSheet: {
+        height: 100,
+        backgroundColor: '#fff',
+        borderTopColor: '#e9ecef',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopRightRadius: 30,
+        borderTopLeftRadius: 30,
+    }
 });
 
 export default FinishScreen;

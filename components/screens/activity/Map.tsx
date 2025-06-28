@@ -4,7 +4,20 @@ import {useActivityStore} from "@/store/activity.store";
 import {Octicons} from "@expo/vector-icons";
 import {useEffect, useRef} from "react";
 
-const Map = () => {
+type Point = {
+    latitude: number;
+    longitude: number;
+    title?: string;
+    description?: string;
+};
+
+type Path = {
+    coordinates: { latitude: number; longitude: number }[];
+    color?: string;
+    width?: number;
+};
+
+const Map = ({points = [], paths = []}: { points?: Point[]; paths?: Path[] }) => {
     const {currentLocation, locations, trashLocations} = useActivityStore();
     const mapRef = useRef<MapView>(null);
 
@@ -56,6 +69,27 @@ const Map = () => {
                         <Octicons name="trash" size={16} color="#fff"/>
                     </View>
                 </Marker>
+            ))}
+
+            {points.map((point, index) => (
+                <Marker
+                    key={`point-${index}`}
+                    coordinate={{
+                        latitude: point.latitude,
+                        longitude: point.longitude,
+                    }}
+                    title={point.title}
+                    description={point.description}
+                />
+            ))}
+
+            {paths.map((path, index) => (
+                <Polyline
+                    key={`path-${index}`}
+                    coordinates={path.coordinates}
+                    strokeColor={path.color || "#000"}
+                    strokeWidth={path.width || 3}
+                />
             ))}
         </MapView>
     );

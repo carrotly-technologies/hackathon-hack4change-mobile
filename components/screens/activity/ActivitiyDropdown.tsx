@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import DropDownPicker from "react-native-dropdown-picker";
+import DropDownPicker, {ValueType} from "react-native-dropdown-picker";
 import {ActivityIndicator, StyleSheet, View} from "react-native";
 import {ActivityType, useActivityTypesQuery} from "@/api/__generated__/graphql";
 import {FontAwesome5} from '@expo/vector-icons';
@@ -14,7 +14,7 @@ const AssocMap: Array<Record<string, { label: string, icon: string }>> = [
     {TREKKING: {label: "Trekking", icon: "hiking"}}
 ];
 
-const ActivityDropdown = () => {
+const ActivityDropdown = ({defaultValue}: { defaultValue?: ValueType }) => {
 
     const {data, loading, error} = useActivityTypesQuery()
     const {setActivityType} = useActivityStore();
@@ -25,7 +25,7 @@ const ActivityDropdown = () => {
 
     useEffect(() => {
         if (value && setActivityType) {
-            setActivityType(value);
+            setActivityType(defaultValue ? defaultValue as ActivityType : value);
         }
     }, [setActivityType, value]);
 

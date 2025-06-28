@@ -1,6 +1,6 @@
-import { useRankingQuery } from '@/api/__generated__/graphql';
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
+import {useRankingQuery} from '@/api/__generated__/graphql';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 
 type User = {
     id: number;
@@ -66,7 +66,6 @@ const RankingScreen: React.FC = () => {
         </View>
     );
 
-    console.log({ topUsers, otherUsers });
 
     return (
         <SafeAreaView style={styles.container}>
