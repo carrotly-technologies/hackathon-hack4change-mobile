@@ -32,7 +32,12 @@ const RootLayout = () => {
                 <Stack screenOptions={{headerShown: false}}>
                     <Stack.Screen name="home" options={{title: 'Home', headerShown: false, gestureEnabled: false}}/>
                     <Stack.Screen name="activity"
-                                  options={{title: 'Asset', headerShown: false, gestureEnabled: false}}/>
+                                  options={{
+                                      title: 'Asset',
+                                      headerShown: true,
+                                      gestureEnabled: false,
+                                      headerBackVisible: true
+                                  }}/>
                 </Stack>
         </ApolloProvider>
     );

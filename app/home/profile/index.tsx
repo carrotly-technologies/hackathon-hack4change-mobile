@@ -5,6 +5,7 @@ import Card from "@/components/ui/Card";
 import {useActivityStore} from "@/store/activity.store";
 import CarrotCoin from "@/components/svg/CarrotCoin";
 import * as Progress from 'react-native-progress';
+import {router} from "expo-router";
 
 const ProfileScreen = () => {
     const badges = Array(10).fill(null);
@@ -20,7 +21,7 @@ const ProfileScreen = () => {
                     <View style={styles.statCard}>
                         <View style={styles.coinMarketHeader}>
                             <Text style={styles.statLabel}>Coin market</Text>
-                            <TouchableOpacity onPress={() => console.log("")}>
+                            <TouchableOpacity onPress={() => router.replace("/marketplace")}>
                                 <Entypo name="chevron-with-circle-right" size={25} color="#437454"/>
                             </TouchableOpacity>
                         </View>

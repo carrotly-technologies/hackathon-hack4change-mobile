@@ -1,0 +1,10 @@
+query MarketplaceDetails($input: MarketplaceInput!) {
+    marketplace(input: $input) {
+        createdAt
+        description
+        id
+        name
+        price
+        updatedAt
+    }
+}

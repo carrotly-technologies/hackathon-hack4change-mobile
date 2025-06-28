@@ -1,6 +1,6 @@
 import {StyleSheet, View, ViewStyle} from "react-native";
 
-const Card = ({children, styles}: { children: React.ReactNode, styles: ViewStyle }) => {
+const Card = ({children, styles}: { children: React.ReactNode, styles?: ViewStyle }) => {
     return <View style={[styling.container, styles]}>
         {children}
     </View>

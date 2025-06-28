@@ -30,8 +30,8 @@ const ActivityIndex = () => {
     const locationSubscription = useRef<Location.LocationSubscription | null>(null);
     const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
     const [startActivity, {data}] = useActivityStartMutation()
-    const [addPoint, {}] = useActivityAddPathPointMutation()
-    const [addTrash, {}] = useActivityAddTrashMutation()
+    const [addPoint, {data: addPointData, error: addPointError}] = useActivityAddPathPointMutation()
+    const [addTrash, {data: addTrashData, error: addTrashError}] = useActivityAddTrashMutation()
 
     useEffect(() => {
         startActivity({
@@ -51,7 +51,6 @@ const ActivityIndex = () => {
     }, [data]);
 
     useEffect(() => {
-        console.log(trashLocations)
     }, [trashLocations]);
 
     useEffect(() => {

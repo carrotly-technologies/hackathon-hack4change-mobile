@@ -256,6 +256,8 @@ export enum Error {
   ActivityNotFound = 'ACTIVITY_NOT_FOUND',
   ExampleNameNotUniqueCode = 'EXAMPLE_NAME_NOT_UNIQUE_CODE',
   ExampleNotFoundCode = 'EXAMPLE_NOT_FOUND_CODE',
+  MarketplaceInsufficientCoins = 'MARKETPLACE_INSUFFICIENT_COINS',
+  MarketplaceNotFound = 'MARKETPLACE_NOT_FOUND',
   UnauthenticatedErrorCode = 'UNAUTHENTICATED_ERROR_CODE'
 }
 
@@ -413,6 +415,56 @@ export type LocalizationInput = {
   longitude: Scalars['Float']['input'];
 };
 
+export type MarketplaceCreateInput = {
+  description: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+};
+
+export type MarketplaceFindManyInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type MarketplaceFindManySortInput = {
+  createdAt?: InputMaybe<SortInput>;
+  name?: InputMaybe<SortInput>;
+  price?: InputMaybe<SortInput>;
+  updatedAt?: InputMaybe<SortInput>;
+};
+
+export type MarketplaceInput = {
+  id: Scalars['ObjectID']['input'];
+};
+
+export type MarketplaceObject = {
+  __typename?: 'MarketplaceObject';
+  createdAt: Scalars['DateTime']['output'];
+  description: Scalars['String']['output'];
+  id: Scalars['ObjectID']['output'];
+  name: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type MarketplacePaginationResponse = {
+  __typename?: 'MarketplacePaginationResponse';
+  data: Array<MarketplaceObject>;
+  metadata: PaginationMetadata;
+};
+
+export type MarketplacePurchaseInput = {
+  marketplaceId: Scalars['ObjectID']['input'];
+  userId: Scalars['ObjectID']['input'];
+};
+
+export type MarketplaceUpdateInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ObjectID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   activityAddPathPoint: ActivityObject;
@@ -437,6 +489,10 @@ export type Mutation = {
   exampleCreate: ExampleObject;
   exampleDelete: Success;
   exampleUpdate: ExampleObject;
+  marketplaceCreate: MarketplaceObject;
+  marketplaceDelete?: Maybe<MarketplaceObject>;
+  marketplacePurchase: MarketplaceObject;
+  marketplaceUpdate?: Maybe<MarketplaceObject>;
   userAddAward: UserObject;
   userCreate: UserObject;
 };
@@ -552,6 +608,26 @@ export type MutationExampleUpdateArgs = {
 };
 
 
+export type MutationMarketplaceCreateArgs = {
+  input: MarketplaceCreateInput;
+};
+
+
+export type MutationMarketplaceDeleteArgs = {
+  input: MarketplaceInput;
+};
+
+
+export type MutationMarketplacePurchaseArgs = {
+  input: MarketplacePurchaseInput;
+};
+
+
+export type MutationMarketplaceUpdateArgs = {
+  input: MarketplaceUpdateInput;
+};
+
+
 export type MutationUserAddAwardArgs = {
   input: UserAddAwardInput;
 };
@@ -610,6 +686,8 @@ export type Query = {
   examples: ExamplePaginationResponse;
   /** Get top users by total points (activities + challenges) with optional date filtering */
   leaderboard: Array<LeaderboardEntryObject>;
+  marketplace?: Maybe<MarketplaceObject>;
+  marketplaces: MarketplacePaginationResponse;
   minioTest: Scalars['String']['output'];
   user?: Maybe<UserObject>;
   userChallengeProgress: Array<UserChallengeProgressObject>;
@@ -692,6 +770,18 @@ export type QueryLeaderboardArgs = {
 };
 
 
+export type QueryMarketplaceArgs = {
+  input: MarketplaceInput;
+};
+
+
+export type QueryMarketplacesArgs = {
+  input: MarketplaceFindManyInput;
+  pagination: PaginationInput;
+  sort: MarketplaceFindManySortInput;
+};
+
+
 export type QueryUserArgs = {
   input: UserInput;
 };
@@ -729,6 +819,7 @@ export type UserAddAwardInput = {
 
 export type UserChallengeProgressObject = {
   __typename?: 'UserChallengeProgressObject';
+  challenge?: Maybe<ChallengeObject>;
   challengeId: Scalars['ObjectID']['output'];
   completedAt?: Maybe<Scalars['DateTime']['output']>;
   createdAt: Scalars['DateTime']['output'];
@@ -894,6 +985,45 @@ export type ActivityUpdateMutationVariables = Exact<{
 export type ActivityUpdateMutation = {
   __typename?: 'Mutation',
   activityUpdate?: { __typename?: 'ActivityObject', id: any } | null
+};
+
+export type MarketplaceDetailsQueryVariables = Exact<{
+  input: MarketplaceInput;
+}>;
+
+
+export type MarketplaceDetailsQuery = {
+  __typename?: 'Query',
+  marketplace?: {
+    __typename?: 'MarketplaceObject',
+    createdAt: any,
+    description: string,
+    id: any,
+    name: string,
+    price: number,
+    updatedAt: any
+  } | null
+};
+
+export type MarketplacesQueryVariables = Exact<{
+  input: MarketplaceFindManyInput;
+}>;
+
+
+export type MarketplacesQuery = {
+  __typename?: 'Query',
+  marketplaces: {
+    __typename?: 'MarketplacePaginationResponse',
+    data: Array<{
+      __typename?: 'MarketplaceObject',
+      createdAt: any,
+      description: string,
+      id: any,
+      name: string,
+      price: number,
+      updatedAt: any
+    }>
+  }
 };
 
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1302,6 +1432,110 @@ export function useActivityUpdateMutation(baseOptions?: Apollo.MutationHookOptio
 export type ActivityUpdateMutationHookResult = ReturnType<typeof useActivityUpdateMutation>;
 export type ActivityUpdateMutationResult = Apollo.MutationResult<ActivityUpdateMutation>;
 export type ActivityUpdateMutationOptions = Apollo.BaseMutationOptions<ActivityUpdateMutation, ActivityUpdateMutationVariables>;
+export const MarketplaceDetailsDocument = gql`
+  query MarketplaceDetails($input: MarketplaceInput!) {
+    marketplace(input: $input) {
+      createdAt
+      description
+      id
+      name
+      price
+      updatedAt
+    }
+  }
+`;
+
+/**
+ * __useMarketplaceDetailsQuery__
+ *
+ * To run a query within a React component, call `useMarketplaceDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarketplaceDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMarketplaceDetailsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMarketplaceDetailsQuery(baseOptions: Apollo.QueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables> & ({
+  variables: MarketplaceDetailsQueryVariables;
+  skip?: boolean;
+} | { skip: boolean; })) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
+}
+
+export function useMarketplaceDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
+}
+
+export function useMarketplaceDetailsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+  return Apollo.useSuspenseQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
+}
+
+export type MarketplaceDetailsQueryHookResult = ReturnType<typeof useMarketplaceDetailsQuery>;
+export type MarketplaceDetailsLazyQueryHookResult = ReturnType<typeof useMarketplaceDetailsLazyQuery>;
+export type MarketplaceDetailsSuspenseQueryHookResult = ReturnType<typeof useMarketplaceDetailsSuspenseQuery>;
+export type MarketplaceDetailsQueryResult = Apollo.QueryResult<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>;
+export const MarketplacesDocument = gql`
+  query Marketplaces($input: MarketplaceFindManyInput!) {
+    marketplaces(input: $input, pagination: {}, sort: {}) {
+      data {
+        createdAt
+        description
+        id
+        name
+        price
+        updatedAt
+      }
+    }
+  }
+`;
+
+/**
+ * __useMarketplacesQuery__
+ *
+ * To run a query within a React component, call `useMarketplacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarketplacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMarketplacesQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMarketplacesQuery(baseOptions: Apollo.QueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables> & ({
+  variables: MarketplacesQueryVariables;
+  skip?: boolean;
+} | { skip: boolean; })) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
+}
+
+export function useMarketplacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
+}
+
+export function useMarketplacesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables>) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+  return Apollo.useSuspenseQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
+}
+
+export type MarketplacesQueryHookResult = ReturnType<typeof useMarketplacesQuery>;
+export type MarketplacesLazyQueryHookResult = ReturnType<typeof useMarketplacesLazyQuery>;
+export type MarketplacesSuspenseQueryHookResult = ReturnType<typeof useMarketplacesSuspenseQuery>;
+export type MarketplacesQueryResult = Apollo.QueryResult<MarketplacesQuery, MarketplacesQueryVariables>;
 export const UserDocument = gql`
     query User {
   user(input: {id: "685fc7347afcbf34e1fd67a6"}) {

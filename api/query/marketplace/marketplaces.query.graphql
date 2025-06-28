@@ -1,0 +1,12 @@
+query Marketplaces($input: MarketplaceFindManyInput!) {
+    marketplaces(input: $input, pagination: {}, sort: {}) {
+        data {
+            createdAt
+            description
+            id
+            name
+            price
+            updatedAt
+        }
+    }
+}
