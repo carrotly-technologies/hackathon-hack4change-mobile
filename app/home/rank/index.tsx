@@ -20,20 +20,26 @@ const useRanking = (mode: 'Tygodniowe' | 'Ogólne') => {
                 limit: 10,
             },
         },
-        fetchPolicy: 'cache-first',
     });
 
     useEffect(() => {
-        refetch({
-            input: {
-                startDate: mode === 'Tygodniowe' ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
-                endDate: mode === 'Tygodniowe' ? new Date() : null,
-                limit: 10,
-            },
-        });
+        async function fetch() {
+            console.log('#1', `Fetching ranking for mode: ${mode}`);
+
+            await refetch({
+                input: {
+                    startDate: mode === 'Tygodniowe' ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
+                    endDate: mode === 'Tygodniowe' ? new Date() : null,
+                    limit: 10,
+                },
+
+            });
+        }
+
+        fetch();
     }, [mode, refetch]);
 
-    return data?.leaderboard?.map((user, index) => ({
+    return data?.leaderboard.map((user, index) => ({
         id: user.id,
         uri: user.avatarUrl ?? null,
         name: `${user.firstname} ${user.lastname}`,
@@ -44,7 +50,7 @@ const useRanking = (mode: 'Tygodniowe' | 'Ogólne') => {
 
 const RankingScreen: React.FC = () => {
     const [selectedPeriod, setSelectedPeriod] = useState<'Tygodniowe' | 'Ogólne'>('Tygodniowe');
-    const slideAnimation = useRef(new Animated.Value(0)).current;
+    const slideAnimation = useRef(new Animated.Value(0));
     const toggleWidth = useRef(0);
 
     const ranking = useRanking(selectedPeriod);
@@ -52,8 +58,10 @@ const RankingScreen: React.FC = () => {
     const topUsers = ranking.slice(0, 3);
     const otherUsers = ranking.slice(3);
 
+    console.log('#2', ranking.map(v => v.name).join(', '));
+
     const animateSlide = (toValue: number) => {
-        Animated.timing(slideAnimation, {
+        Animated.timing(slideAnimation.current, {
             toValue,
             duration: 200,
             useNativeDriver: false,
@@ -73,6 +81,7 @@ const RankingScreen: React.FC = () => {
             {uri ? (
                 <Image
                     source={{ uri }}
+                    cachePolicy="memory-disk"
                     style={{ width: size, height: size, borderRadius: size / 2 }}
                 />
             ) : (
@@ -155,7 +164,7 @@ const RankingScreen: React.FC = () => {
                             toggleWidth.current = width;
 
                             if (selectedPeriod === 'Ogólne') {
-                                slideAnimation.setValue(width / 2);
+                                slideAnimation.current.setValue(width / 2);
                             }
                         }}
                     >
@@ -163,7 +172,7 @@ const RankingScreen: React.FC = () => {
                             style={[
                                 styles.slidingBackground,
                                 {
-                                    transform: [{ translateX: slideAnimation }],
+                                    transform: [{ translateX: slideAnimation.current }],
                                     width: toggleWidth.current > 0 ? toggleWidth.current / 2 : '50%',
                                 }
                             ]}
@@ -206,6 +215,7 @@ const RankingScreen: React.FC = () => {
                         <Image
                             source={require('../../../assets/images/podium.png')}
                             style={styles.podiumImage}
+                            cachePolicy="memory-disk"
                             contentFit="contain"
                         />
                     </View>
