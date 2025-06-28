@@ -1,5 +1,6 @@
 import {create} from 'zustand'
 import {ActivityActionsProps, ActivityState, SimpleUser} from "@/utils/types";
+import {ActivityType} from "@/api/__generated__/graphql";
 
 export const useActivityStore = create<ActivityState & ActivityActionsProps>((set) => ({
     isStarted: false,
@@ -7,11 +8,13 @@ export const useActivityStore = create<ActivityState & ActivityActionsProps>((se
     isPaused: false,
     elapsedTime: 0,
     currentLocation: null,
+    activityId: null,
     locations: [],
     distance: 0,
     trashCount: 0,
     trashLocations: [],
     user: null,
+    type: null,
     setStarted: (value: boolean) => set({isStarted: value}),
     setPlaying: (value: boolean) => set({isPlaying: value}),
     setPaused: (value: boolean) => set({isPaused: value}),
@@ -37,4 +40,16 @@ export const useActivityStore = create<ActivityState & ActivityActionsProps>((se
     })),
     resetTrashLocations: () => set({trashLocations: []}),
     setUser: (user: SimpleUser) => set({user: user}),
+    setActivityType: (type: ActivityType) => set({type: type}),
+    setActivityId: (id: string) => set({activityId: id}),
+    resetActivity: () => set({
+        isStarted: false,
+        isPlaying: false,
+        isPaused: false,
+        elapsedTime: 0,
+        currentLocation: null,
+        activityId: null,
+        locations: [],
+        distance: 0,
+    })
 }));

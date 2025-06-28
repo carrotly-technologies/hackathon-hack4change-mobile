@@ -1,4 +1,5 @@
 import {ReactElement} from "react";
+import {ActivityType} from "@/api/__generated__/graphql";
 
 export type MemoFeed = {
     id: string;
@@ -33,6 +34,8 @@ export type ActivityState = {
     trashCount: number;
     trashLocations: LocationCoords[];
     user: SimpleUser | null;
+    type: ActivityType | null,
+    activityId: string | null;
 }
 
 export type ActivityActionsProps = {
@@ -52,6 +55,9 @@ export type ActivityActionsProps = {
     addTrashLocation: (location: LocationCoords) => void;
     resetTrashLocations: () => void;
     setUser: (user: SimpleUser) => void;
+    setActivityType: (type: ActivityType) => void;
+    setActivityId: (id: string) => void;
+    resetActivity: () => void;
 }
 
 export type SimpleUser = {

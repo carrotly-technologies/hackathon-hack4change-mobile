@@ -27,8 +27,8 @@ const Map = () => {
             showsUserLocation
             followsUserLocation
             initialRegion={{
-                latitude: 52.2297,
-                longitude: 21.0122,
+                latitude: 54.4082,
+                longitude: 18.6175,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
             }}

@@ -5,6 +5,7 @@ import ActivitiyDropdown from "@/components/screens/activity/ActivitiyDropdown";
 import Map from "@/components/screens/activity/Map";
 import {router} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {useActivityEndMutation} from "@/api/__generated__/graphql";
 
 const FinishScreen = () => {
     const {
@@ -16,11 +17,12 @@ const FinishScreen = () => {
         setPaused,
         trashCount,
         resetTrashCount,
-        trashLocations,
+        activityId,
         resetTrashLocations
     } = useActivityStore();
     const [activityName, setActivityName] = useState("");
     const [description, setDescription] = useState("");
+    const [endActivity, {data, loading, error}] = useActivityEndMutation();
 
     const formatTime = (seconds: number) => {
         const hours = Math.floor(seconds / 3600);
@@ -37,7 +39,16 @@ const FinishScreen = () => {
 
     useEffect(() => {
         setPlaying(false);
-    }, []);
+    }, [setPlaying]);
+
+    // console.log(data, loading, error);
+
+    useEffect(() => {
+        if (data) {
+            console.log(data);
+            router.replace('/home/activity');
+        }
+    }, [data]);
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
@@ -47,10 +58,9 @@ const FinishScreen = () => {
                 </TouchableOpacity>
 
                 <View style={styles.inputSection}>
-                    <Text style={styles.inputLabel}>Nazwa</Text>
                     <TextInput
                         style={styles.textInput}
-                        placeholder="Input Text"
+                        placeholder="Nazwa aktywności...."
                         value={activityName}
                         onChangeText={setActivityName}
                         placeholderTextColor="#999"
@@ -110,7 +120,18 @@ const FinishScreen = () => {
                         resetLocations();
                         resetTrashCount();
                         resetTrashLocations();
-                        router.replace('/home/activity');
+
+                        endActivity({
+                            variables: {
+                                input: {
+                                    activityId: activityId,
+                                    description: description,
+                                    name: activityName,
+                                    distance: distance,
+                                    imageUrls: []
+                                }
+                            }
+                        });
                     }}
                 >
                     <Text style={styles.saveButtonText}>Zapisz aktywność</Text>

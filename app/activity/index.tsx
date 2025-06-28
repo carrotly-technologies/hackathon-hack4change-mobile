@@ -1,4 +1,4 @@
-import {Alert, SafeAreaView, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Alert, StyleSheet, TouchableOpacity, View} from "react-native";
 import Map from "@/components/screens/activity/Map";
 import {useActivityStore} from "@/store/activity.store";
 import {Entypo, FontAwesome} from "@expo/vector-icons";
@@ -6,6 +6,12 @@ import React, {useEffect, useRef, useState} from "react";
 import ActivityTrackdown from "@/components/screens/activity/ActivityTrackdown";
 import {router} from "expo-router";
 import * as Location from 'expo-location';
+import {SafeAreaView} from "react-native-safe-area-context";
+import {
+    useActivityAddPathPointMutation,
+    useActivityAddTrashMutation,
+    useActivityStartMutation
+} from "@/api/__generated__/graphql";
 
 const ActivityIndex = () => {
     const {
@@ -14,11 +20,33 @@ const ActivityIndex = () => {
         incrementElapsedTime, setElapsedTime,
         currentLocation, setCurrentLocation, addLocation,
         incrementDistance, resetLocations,
-        incrementTrashCount, addTrashLocation
+        incrementTrashCount, addTrashLocation, type,
+        activityId, setActivityId,
+        user
     } = useActivityStore();
     const timerRef = useRef<number | null>(null);
     const locationSubscription = useRef<Location.LocationSubscription | null>(null);
     const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
+    const [startActivity, {data}] = useActivityStartMutation()
+    const [addPoint, {}] = useActivityAddPathPointMutation()
+    const [addTrash, {}] = useActivityAddTrashMutation()
+
+    useEffect(() => {
+        startActivity({
+            variables: {
+                input: {
+                    activityType: type!,
+                    userId: user!.id
+                }
+            }
+        })
+    }, []);
+
+    useEffect(() => {
+        if (data) {
+            setActivityId(data?.activityStart.id)
+        }
+    }, [data]);
 
     useEffect(() => {
         (async () => {
@@ -37,19 +65,6 @@ const ActivityIndex = () => {
             setPlaying(true);
         }
     }, []);
-
-    // useEffect(() => {
-    //     if(isPlaying) {
-    //         [  {latitude: 50.102605, longitude: 20.018156, timestamp: 0},
-    //             {latitude: 50.103000, longitude: 20.019000, timestamp: 10},
-    //             {latitude: 50.103500, longitude: 20.019800, timestamp: 20},
-    //             {latitude: 50.104000, longitude: 20.020500, timestamp: 30},
-    //             {latitude: 50.104500, longitude: 20.021200, timestamp: 40},
-    //             {latitude: 50.105000, longitude: 20.022000, timestamp: 50}].forEach(
-    //                 loc => addLocation(loc)
-    //         )
-    //     }
-    // }, [isPlaying]);
 
     const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
         const R = 6371e3;
@@ -81,12 +96,21 @@ const ActivityIndex = () => {
 
                 setCurrentLocation(locationData);
                 addLocation(locationData);
+                addPoint({
+                    variables: {
+                        input: {
+                            activityId: activityId!,
+                            lon: locationData.longitude.toString(),
+                            lat: locationData.latitude.toString(),
+                        }
+                    }
+                })
 
                 locationSubscription.current = await Location.watchPositionAsync(
                     {
                         accuracy: Location.Accuracy.BestForNavigation,
-                        distanceInterval: 5,
-                        timeInterval: 1000
+                        distanceInterval: 2,
+                        timeInterval: 200
                     },
                     (newLocation) => {
                         const newLocationData = {
@@ -100,6 +124,7 @@ const ActivityIndex = () => {
                                 currentLocation.latitude, currentLocation.longitude,
                                 newLocationData.latitude, newLocationData.longitude
                             );
+
 
                             if (distance > 1) {
                                 incrementDistance(distance);
@@ -164,7 +189,8 @@ const ActivityIndex = () => {
         router.replace("/activity/finish");
     };
 
-    return <SafeAreaView style={{flex: 1}}>
+    return <SafeAreaView style={{flex: 1, paddingTop: 55, backgroundColor: "white"}}
+                         edges={["bottom", "left", "right"]}>
         <ActivityTrackdown/>
         <Map/>
 
@@ -174,6 +200,15 @@ const ActivityIndex = () => {
                 incrementTrashCount();
                 if (currentLocation) {
                     addTrashLocation(currentLocation);
+                    addTrash({
+                        variables: {
+                            input: {
+                                activityId: activityId!,
+                                lon: currentLocation.longitude.toString(),
+                                lat: currentLocation.latitude.toString()
+                            }
+                        }
+                    })
                 } else {
                     (async () => {
                         try {
@@ -193,34 +228,33 @@ const ActivityIndex = () => {
                 }
             }}
         >
-            <Entypo name="plus" size={35} color="black"/>
+            <Entypo name="plus" size={35} color="white"/>
         </TouchableOpacity>
 
         <View style={styles.bottomButtonsContainer}>
-            {(!isPlaying || isPaused) && (
+            {(!isPlaying || isPaused) && <>
                 <TouchableOpacity
                     style={[styles.circleButton, isPaused && styles.pausedButton]}
                     onPress={handlePlayPress}
                 >
                     <Entypo name="controller-play" size={50} color={isPaused ? "white" : "black"}/>
                 </TouchableOpacity>
-            )}
+                <TouchableOpacity
+                    style={styles.circleButton}
+                    onPress={handleStopPress}
+                >
+                    <Entypo name="controller-stop" size={50} color="white"/>
+                </TouchableOpacity>
+            </>}
 
-            {(isPlaying && !isPaused) && (
+            {(isPlaying && !isPaused) && <>
                 <TouchableOpacity
                     style={[styles.circleButton, styles.activeButton]}
                     onPress={handlePausePress}
                 >
-                    <FontAwesome name="pause" size={40} color="white"/>
+                    <FontAwesome name="pause-circle-o" size={40} color="white"/>
                 </TouchableOpacity>
-            )}
-
-            <TouchableOpacity
-                style={styles.circleButton}
-                onPress={handleStopPress}
-            >
-                <Entypo name="controller-stop" size={50} color="black"/>
-            </TouchableOpacity>
+            </>}
         </View>
     </SafeAreaView>
 }
@@ -231,14 +265,12 @@ const styles = StyleSheet.create({
         zIndex: 20,
         bottom: 120,
         left: 10,
-        backgroundColor: "#fff",
+        backgroundColor: "#437454",
         padding: 12,
-        borderRadius: 15,
+        borderRadius: 40,
         elevation: 5,
         alignItems: "center",
         justifyContent: "center",
-        borderColor: "#6f42c1",
-        borderWidth: 2,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -259,9 +291,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     circleButton: {
-        backgroundColor: "#fff",
-        borderColor: "#e9ecef",
-        borderWidth: 1,
+        backgroundColor: "#437454",
         width: 80,
         height: 80,
         borderRadius: 40,
@@ -277,12 +307,10 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
     },
     activeButton: {
-        backgroundColor: "#28a745",
-        borderColor: "#fff",
+        backgroundColor: "#437454",
     },
     pausedButton: {
-        backgroundColor: "#fd7e14",
-        borderColor: "#fff",
+        backgroundColor: "#437454",
     }
 })
 

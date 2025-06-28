@@ -1,0 +1,5 @@
+mutation ActivityStart($input: ActivityStartInput!) {
+    activityStart(input: $input) {
+        id
+    }
+}

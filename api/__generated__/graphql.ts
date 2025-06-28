@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import {gql} from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -52,8 +53,10 @@ export type ActivityCreateInput = {
 
 export type ActivityEndInput = {
   activityId: Scalars['ObjectID']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
   distance: Scalars['Float']['input'];
   imageUrls: Array<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ActivityFindManyInput = {
@@ -90,14 +93,14 @@ export type ActivityObject = {
   activityType: ActivityType;
   createdAt: Scalars['DateTime']['output'];
   currentDuration?: Maybe<Scalars['Float']['output']>;
-  description: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   distance: Scalars['Float']['output'];
   durationTime: Scalars['Float']['output'];
   endTime?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ObjectID']['output'];
   imageUrls: Array<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
   path: Array<PathPointObject>;
   points: Scalars['Float']['output'];
   startTime?: Maybe<Scalars['DateTime']['output']>;
@@ -116,8 +119,6 @@ export type ActivityPaginationResponse = {
 
 export type ActivityStartInput = {
   activityType: ActivityType;
-  description: Scalars['String']['input'];
-  name: Scalars['String']['input'];
   userId: Scalars['ObjectID']['input'];
 };
 
@@ -748,12 +749,91 @@ export type ActivitiesQueryVariables = Exact<{
 }>;
 
 
-export type ActivitiesQuery = { __typename?: 'Query', activities: { __typename?: 'ActivityPaginationResponse', data: Array<{ __typename?: 'ActivityObject', activityType: ActivityType, createdAt: any, currentDuration?: number | null, description: string, distance: number, durationTime: number, endTime?: any | null, id: any, imageUrls: Array<string>, name: string, points: number, startTime?: any | null, trashCount: number, updatedAt: any, userId: any, path: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>, trashLocations: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>, user?: { __typename?: 'UserObject', avatarUrl?: string | null, id: any, firstname: string, lastname: string } | null }> } };
+export type ActivitiesQuery = {
+  __typename?: 'Query',
+  activities: {
+    __typename?: 'ActivityPaginationResponse',
+    data: Array<{
+      __typename?: 'ActivityObject',
+      activityType: ActivityType,
+      createdAt: any,
+      currentDuration?: number | null,
+      description?: string | null,
+      distance: number,
+      durationTime: number,
+      endTime?: any | null,
+      id: any,
+      imageUrls: Array<string>,
+      name?: string | null,
+      points: number,
+      startTime?: any | null,
+      trashCount: number,
+      updatedAt: any,
+      userId: any,
+      path: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
+      trashLocations: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
+      user?: {
+        __typename?: 'UserObject',
+        avatarUrl?: string | null,
+        id: any,
+        firstname: string,
+        lastname: string
+      } | null
+    }>
+  }
+};
+
+export type ActivityAddPathPointMutationVariables = Exact<{
+  input: ActivityAddPathPointInput;
+}>;
+
+
+export type ActivityAddPathPointMutation = {
+  __typename?: 'Mutation',
+  activityAddPathPoint: { __typename?: 'ActivityObject', id: any }
+};
+
+export type ActivityAddTrashMutationVariables = Exact<{
+  input: ActivityAddTrashInput;
+}>;
+
+
+export type ActivityAddTrashMutation = {
+  __typename?: 'Mutation',
+  activityAddTrash: { __typename?: 'ActivityObject', id: any }
+};
+
+export type ActivityEndMutationVariables = Exact<{
+  input: ActivityEndInput;
+}>;
+
+
+export type ActivityEndMutation = { __typename?: 'Mutation', activityEnd: { __typename?: 'ActivityObject', id: any } };
+
+export type ActivityStartMutationVariables = Exact<{
+  input: ActivityStartInput;
+}>;
+
+
+export type ActivityStartMutation = {
+  __typename?: 'Mutation',
+  activityStart: { __typename?: 'ActivityObject', id: any }
+};
 
 export type ActivityTypesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ActivityTypesQuery = { __typename?: 'Query', activities: { __typename?: 'ActivityPaginationResponse', data: Array<{ __typename?: 'ActivityObject', activityType: ActivityType }> } };
+
+export type ActivityUpdateMutationVariables = Exact<{
+  input: ActivityUpdateInput;
+}>;
+
+
+export type ActivityUpdateMutation = {
+  __typename?: 'Mutation',
+  activityUpdate?: { __typename?: 'ActivityObject', id: any } | null
+};
 
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -937,6 +1017,142 @@ export type ActivitiesQueryHookResult = ReturnType<typeof useActivitiesQuery>;
 export type ActivitiesLazyQueryHookResult = ReturnType<typeof useActivitiesLazyQuery>;
 export type ActivitiesSuspenseQueryHookResult = ReturnType<typeof useActivitiesSuspenseQuery>;
 export type ActivitiesQueryResult = Apollo.QueryResult<ActivitiesQuery, ActivitiesQueryVariables>;
+export const ActivityAddPathPointDocument = gql`
+  mutation ActivityAddPathPoint($input: ActivityAddPathPointInput!) {
+    activityAddPathPoint(input: $input) {
+      id
+    }
+  }
+`;
+export type ActivityAddPathPointMutationFn = Apollo.MutationFunction<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>;
+
+/**
+ * __useActivityAddPathPointMutation__
+ *
+ * To run a mutation, you first call `useActivityAddPathPointMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActivityAddPathPointMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activityAddPathPointMutation, { data, loading, error }] = useActivityAddPathPointMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useActivityAddPathPointMutation(baseOptions?: Apollo.MutationHookOptions<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>(ActivityAddPathPointDocument, options);
+}
+
+export type ActivityAddPathPointMutationHookResult = ReturnType<typeof useActivityAddPathPointMutation>;
+export type ActivityAddPathPointMutationResult = Apollo.MutationResult<ActivityAddPathPointMutation>;
+export type ActivityAddPathPointMutationOptions = Apollo.BaseMutationOptions<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>;
+export const ActivityAddTrashDocument = gql`
+  mutation ActivityAddTrash($input: ActivityAddTrashInput!) {
+    activityAddTrash(input: $input) {
+      id
+    }
+  }
+`;
+export type ActivityAddTrashMutationFn = Apollo.MutationFunction<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>;
+
+/**
+ * __useActivityAddTrashMutation__
+ *
+ * To run a mutation, you first call `useActivityAddTrashMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActivityAddTrashMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activityAddTrashMutation, { data, loading, error }] = useActivityAddTrashMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useActivityAddTrashMutation(baseOptions?: Apollo.MutationHookOptions<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>(ActivityAddTrashDocument, options);
+}
+
+export type ActivityAddTrashMutationHookResult = ReturnType<typeof useActivityAddTrashMutation>;
+export type ActivityAddTrashMutationResult = Apollo.MutationResult<ActivityAddTrashMutation>;
+export type ActivityAddTrashMutationOptions = Apollo.BaseMutationOptions<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>;
+export const ActivityEndDocument = gql`
+  mutation ActivityEnd($input: ActivityEndInput!) {
+    activityEnd(input: $input) {
+      id
+    }
+  }
+`;
+export type ActivityEndMutationFn = Apollo.MutationFunction<ActivityEndMutation, ActivityEndMutationVariables>;
+
+/**
+ * __useActivityEndMutation__
+ *
+ * To run a mutation, you first call `useActivityEndMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActivityEndMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activityEndMutation, { data, loading, error }] = useActivityEndMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useActivityEndMutation(baseOptions?: Apollo.MutationHookOptions<ActivityEndMutation, ActivityEndMutationVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<ActivityEndMutation, ActivityEndMutationVariables>(ActivityEndDocument, options);
+}
+
+export type ActivityEndMutationHookResult = ReturnType<typeof useActivityEndMutation>;
+export type ActivityEndMutationResult = Apollo.MutationResult<ActivityEndMutation>;
+export type ActivityEndMutationOptions = Apollo.BaseMutationOptions<ActivityEndMutation, ActivityEndMutationVariables>;
+export const ActivityStartDocument = gql`
+  mutation ActivityStart($input: ActivityStartInput!) {
+    activityStart(input: $input) {
+      id
+    }
+  }
+`;
+export type ActivityStartMutationFn = Apollo.MutationFunction<ActivityStartMutation, ActivityStartMutationVariables>;
+
+/**
+ * __useActivityStartMutation__
+ *
+ * To run a mutation, you first call `useActivityStartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActivityStartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activityStartMutation, { data, loading, error }] = useActivityStartMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useActivityStartMutation(baseOptions?: Apollo.MutationHookOptions<ActivityStartMutation, ActivityStartMutationVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<ActivityStartMutation, ActivityStartMutationVariables>(ActivityStartDocument, options);
+}
+
+export type ActivityStartMutationHookResult = ReturnType<typeof useActivityStartMutation>;
+export type ActivityStartMutationResult = Apollo.MutationResult<ActivityStartMutation>;
+export type ActivityStartMutationOptions = Apollo.BaseMutationOptions<ActivityStartMutation, ActivityStartMutationVariables>;
 export const ActivityTypesDocument = gql`
     query ActivityTypes {
   activities(input: {}, pagination: {}, sort: {}) {
@@ -978,6 +1194,40 @@ export type ActivityTypesQueryHookResult = ReturnType<typeof useActivityTypesQue
 export type ActivityTypesLazyQueryHookResult = ReturnType<typeof useActivityTypesLazyQuery>;
 export type ActivityTypesSuspenseQueryHookResult = ReturnType<typeof useActivityTypesSuspenseQuery>;
 export type ActivityTypesQueryResult = Apollo.QueryResult<ActivityTypesQuery, ActivityTypesQueryVariables>;
+export const ActivityUpdateDocument = gql`
+  mutation ActivityUpdate($input: ActivityUpdateInput!) {
+    activityUpdate(input: $input) {
+      id
+    }
+  }
+`;
+export type ActivityUpdateMutationFn = Apollo.MutationFunction<ActivityUpdateMutation, ActivityUpdateMutationVariables>;
+
+/**
+ * __useActivityUpdateMutation__
+ *
+ * To run a mutation, you first call `useActivityUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActivityUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activityUpdateMutation, { data, loading, error }] = useActivityUpdateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useActivityUpdateMutation(baseOptions?: Apollo.MutationHookOptions<ActivityUpdateMutation, ActivityUpdateMutationVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<ActivityUpdateMutation, ActivityUpdateMutationVariables>(ActivityUpdateDocument, options);
+}
+
+export type ActivityUpdateMutationHookResult = ReturnType<typeof useActivityUpdateMutation>;
+export type ActivityUpdateMutationResult = Apollo.MutationResult<ActivityUpdateMutation>;
+export type ActivityUpdateMutationOptions = Apollo.BaseMutationOptions<ActivityUpdateMutation, ActivityUpdateMutationVariables>;
 export const UserDocument = gql`
     query User {
   user(input: {id: "685fc7347afcbf34e1fd67a6"}) {

@@ -1,0 +1,5 @@
+mutation ActivityAddTrash($input: ActivityAddTrashInput!) {
+    activityAddTrash(input: $input) {
+        id
+    }
+}

@@ -1,0 +1,5 @@
+mutation ActivityAddPathPoint($input: ActivityAddPathPointInput!) {
+    activityAddPathPoint(input: $input) {
+        id
+    }
+}

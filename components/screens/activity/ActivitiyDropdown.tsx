@@ -3,6 +3,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import {ActivityIndicator, StyleSheet, View} from "react-native";
 import {ActivityType, useActivityTypesQuery} from "@/api/__generated__/graphql";
 import {FontAwesome5} from '@expo/vector-icons';
+import {useActivityStore} from "@/store/activity.store";
 
 
 const AssocMap: Array<Record<string, { label: string, icon: string }>> = [
@@ -16,11 +17,17 @@ const AssocMap: Array<Record<string, { label: string, icon: string }>> = [
 const ActivityDropdown = () => {
 
     const {data, loading, error} = useActivityTypesQuery()
+    const {setActivityType} = useActivityStore();
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState<ActivityType | null>(null);
     const [items, setItems] = useState<{ label: string; value: ActivityType; icon: () => React.ReactElement }[]>([]);
 
+    useEffect(() => {
+        if (value && setActivityType) {
+            setActivityType(value);
+        }
+    }, [setActivityType, value]);
 
     useEffect(() => {
         if (data) {

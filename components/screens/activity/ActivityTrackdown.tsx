@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#e9ecef',
         paddingVertical: 10,
+        borderRadius: 30,
     },
     entryContainer: {
         justifyContent: "center",
