@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import {gql} from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -557,6 +558,7 @@ export type PathPointUpdateInput = {
 export type Query = {
   __typename?: 'Query';
   activities: ActivityPaginationResponse;
+  activitiesThrashMap: Array<PathPointObject>;
   activity?: Maybe<ActivityObject>;
   activityCurrentDuration?: Maybe<Scalars['Float']['output']>;
   activityStarted?: Maybe<ActivityObject>;
@@ -740,6 +742,47 @@ export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type QueryQuery = { __typename?: 'Query', minioTest: string };
 
+export type ActivitiesQueryVariables = Exact<{
+  input: ActivityFindManyInput;
+  pagination: PaginationInput;
+  sort: ActivityFindManySortInput;
+}>;
+
+
+export type ActivitiesQuery = {
+  __typename?: 'Query',
+  activities: {
+    __typename?: 'ActivityPaginationResponse',
+    data: Array<{
+      __typename?: 'ActivityObject',
+      activityType: ActivityType,
+      createdAt: any,
+      currentDuration?: number | null,
+      description: string,
+      distance: number,
+      durationTime: number,
+      endTime?: any | null,
+      id: any,
+      imageUrls: Array<string>,
+      name: string,
+      points: number,
+      startTime?: any | null,
+      trashCount: number,
+      updatedAt: any,
+      userId: any,
+      path: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
+      trashLocations: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
+      user?: {
+        __typename?: 'UserObject',
+        avatarUrl?: string | null,
+        id: any,
+        firstname: string,
+        lastname: string
+      } | null
+    }>
+  }
+};
+
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -843,6 +886,84 @@ export type QueryQueryHookResult = ReturnType<typeof useQueryQuery>;
 export type QueryLazyQueryHookResult = ReturnType<typeof useQueryLazyQuery>;
 export type QuerySuspenseQueryHookResult = ReturnType<typeof useQuerySuspenseQuery>;
 export type QueryQueryResult = Apollo.QueryResult<QueryQuery, QueryQueryVariables>;
+export const ActivitiesDocument = gql`
+  query Activities($input: ActivityFindManyInput!, $pagination: PaginationInput!, $sort: ActivityFindManySortInput!) {
+    activities(input: $input, pagination: $pagination, sort: $sort) {
+      data {
+        activityType
+        createdAt
+        currentDuration
+        description
+        distance
+        durationTime
+        endTime
+        id
+        imageUrls
+        name
+        path {
+          lat
+          lon
+        }
+        points
+        startTime
+        trashCount
+        trashLocations {
+          lat
+          lon
+        }
+        updatedAt
+        user {
+          avatarUrl
+          id
+          firstname
+          lastname
+        }
+        userId
+      }
+    }
+  }
+`;
+
+/**
+ * __useActivitiesQuery__
+ *
+ * To run a query within a React component, call `useActivitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActivitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivitiesQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *      pagination: // value for 'pagination'
+ *      sort: // value for 'sort'
+ *   },
+ * });
+ */
+export function useActivitiesQuery(baseOptions: Apollo.QueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables> & ({
+  variables: ActivitiesQueryVariables;
+  skip?: boolean;
+} | { skip: boolean; })) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
+}
+
+export function useActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
+}
+
+export function useActivitiesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ActivitiesQuery, ActivitiesQueryVariables>) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+  return Apollo.useSuspenseQuery<ActivitiesQuery, ActivitiesQueryVariables>(ActivitiesDocument, options);
+}
+
+export type ActivitiesQueryHookResult = ReturnType<typeof useActivitiesQuery>;
+export type ActivitiesLazyQueryHookResult = ReturnType<typeof useActivitiesLazyQuery>;
+export type ActivitiesSuspenseQueryHookResult = ReturnType<typeof useActivitiesSuspenseQuery>;
+export type ActivitiesQueryResult = Apollo.QueryResult<ActivitiesQuery, ActivitiesQueryVariables>;
 export const UserDocument = gql`
     query User {
   user(input: {id: "685fc7347afcbf34e1fd67a6"}) {

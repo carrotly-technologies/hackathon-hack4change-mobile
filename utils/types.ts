@@ -1,3 +1,5 @@
+import {ReactElement} from "react";
+
 export type MemoFeed = {
     id: string;
     avatar: string;
@@ -6,6 +8,7 @@ export type MemoFeed = {
     points: number;
     achievements: string;
     details: string;
+    images: string[]
 }
 
 export type MemoFeedProps = {
@@ -57,4 +60,18 @@ export type SimpleUser = {
     firstname: string;
     lastname: string;
     avatarUrl: string;
+}
+
+export interface TabScreen {
+    name: string;
+    title: string;
+    icon?: (props: IconProps) => ReactElement;
+    headerShow?: boolean;
+}
+
+
+export interface IconProps {
+    fill?: string;
+    color?: string;
+    size?: number;
 }

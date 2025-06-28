@@ -1,13 +1,10 @@
 import {SafeAreaView, StyleSheet, TouchableOpacity} from "react-native";
 import Map from "@/components/screens/activity/Map";
-import {useActivityStore} from "@/store/activity.store";
 import {FontAwesome5} from "@expo/vector-icons";
 import React from "react";
 import ActivityDropdown from "@/components/screens/activity/ActivitiyDropdown";
 
 const ActivityIndex = () => {
-    const {} = useActivityStore();
-
     return <SafeAreaView>
         <ActivityDropdown/>
         <Map/>

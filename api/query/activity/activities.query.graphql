@@ -1,0 +1,35 @@
+query Activities($input: ActivityFindManyInput!, $pagination: PaginationInput!, $sort: ActivityFindManySortInput!) {
+    activities(input: $input, pagination: $pagination, sort: $sort) {
+        data {
+            activityType
+            createdAt
+            currentDuration
+            description
+            distance
+            durationTime
+            endTime
+            id
+            imageUrls
+            name
+            path {
+                lat
+                lon
+            }
+            points
+            startTime
+            trashCount
+            trashLocations {
+                lat
+                lon
+            }
+            updatedAt
+            user {
+                avatarUrl
+                id
+                firstname
+                lastname
+            }
+            userId
+        }
+    }
+}

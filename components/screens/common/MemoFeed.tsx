@@ -1,7 +1,7 @@
 import {FC} from "react";
 import {MemoFeedProps} from "@/utils/types";
 import Card from "@/components/ui/Card";
-import {StyleSheet, Text, View} from "react-native";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import {Avatar} from 'react-native-elements';
 import {Image} from "expo-image";
 
@@ -35,10 +35,13 @@ const MemoFeed: FC<MemoFeedProps> = ({feed}) => {
                         <Text style={styles.memoParameterValue}>{item.achievements}</Text>
                     </View>
                 </View>
-                <Image
-                    source={{uri: "https://picsum.photos/400/500"}}
-                    style={styles.image}
-                />
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{}}>
+                    {item.images.map((image, index) => (<Image
+                        key={index}
+                        source={{uri: image}}
+                        style={styles.image}
+                    />))}
+                </ScrollView>
             </Card>
         ))}
     </>
@@ -92,9 +95,10 @@ const styles = StyleSheet.create({
         color: "#000",
     },
     image: {
-        width: "100%",
+        width: 300,
         height: 150,
         borderRadius: 8,
+        marginHorizontal: 8
     }
 })
 

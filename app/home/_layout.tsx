@@ -1,70 +1,54 @@
-import {router, Tabs, usePathname} from 'expo-router';
-import {HapticTab} from "@/components/HapticTab";
+import {Tabs} from 'expo-router';
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import {TouchableOpacity} from "react-native";
 import React from "react";
-import {Ionicons, Octicons} from "@expo/vector-icons";
+import {Octicons} from "@expo/vector-icons";
+import CustomBottomTab from "@/components/bottom-tab/CustomBottomTab";
+import {TabScreen} from "@/utils/types";
 
+const TabScreens: TabScreen[] = [
+    {
+        name: "index",
+        title: "Home",
+        icon: (props) => <Octicons name="home" size={24} color={props.color}/>
+    },
+    {
+        name: "rank",
+        title: "Ranking",
+        icon: (props) => <Octicons name="search" size={24} color={props.color}/>
+    },
+    {
+        name: "activity",
+        title: "Rozpocznij",
+        icon: (props) => <Octicons name="plus-circle" size={24} color={props.color}/>
+    },
+    {
+        name: "events",
+        title: "Wydarzenia",
+        icon: (props) => <Octicons name="bell" size={24} color={props.color}/>
+    },
+    {
+        name: "profile",
+        title: "Profil",
+        icon: (props) => <Octicons name="person" size={24} color={props.color}/>,
+    },
+]
 
 const RootLayout = () => {
 
-    const path = usePathname();
-
-
     return (
         <Tabs
+            tabBar={props => {
+                return <CustomBottomTab {...props} allItems={TabScreens}/>
+            }}
             screenOptions={{
                 headerShown: false,
-                tabBarButton: HapticTab,
                 tabBarBackground: TabBarBackground,
             }}>
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: 'Home',
-                    tabBarIcon: () => <Octicons name="home" size={24} color="black"/>,
-                }}
-            />
-            <Tabs.Screen
-                name="rank"
-                options={{
-                    title: 'Ranking',
-                    tabBarIcon: () => <Octicons name="search" size={24} color="black"/>,
-                }}
-            />
-            <Tabs.Screen
-                name="activity"
-                options={{
-                    title: 'Rozpocznij',
-                    tabBarIcon: () => {
-                        if (path === "/home/activity") {
-                            return <TouchableOpacity
-                                onPress={() => router.replace("/activity")}
-                                style={{justifyContent: "center", width: 60, height: 80}}
-                            >
-                                <Ionicons name={"play"} size={60}
-                                          style={{position: "absolute", top: -10}}
-                                          color="black"/>
-                            </TouchableOpacity>;
-                        }
-                        return <Octicons name="plus-circle" size={24} color="black"/>;
-                    },
-                }}
-            />
-            <Tabs.Screen
-                name="events"
-                options={{
-                    title: 'Wydarzenia',
-                    tabBarIcon: () => <Octicons name="bell" size={24} color="black"/>,
-                }}
-            />
-            <Tabs.Screen
-                name="profile"
-                options={{
-                    title: 'Profil',
-                    tabBarIcon: () => <Octicons name="person" size={24} color="black"/>,
-                }}
-            />
+            {TabScreens.map((tab: TabScreen) => <Tabs.Screen key={tab.name} name={tab.name}
+                                                             options={{
+                                                                 title: tab.title,
+                                                                 headerShown: false
+                                                             }}/>)}
         </Tabs>
     );
 }
