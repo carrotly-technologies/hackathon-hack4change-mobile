@@ -22,12 +22,12 @@ export type ActivityState = {
     isStarted: boolean;
     isPlaying: boolean;
     isPaused: boolean;
-    elapsedTime: number; // Time in seconds
+    elapsedTime: number;
     currentLocation: LocationCoords | null;
     locations: LocationCoords[];
-    distance: number; // Distance in meters
-    trashCount: number; // Number of trash items collected
-    trashLocations: LocationCoords[]; // Locations where trash was collected
+    distance: number;
+    trashCount: number;
+    trashLocations: LocationCoords[];
 }
 
 export type ActivityActionsProps = {

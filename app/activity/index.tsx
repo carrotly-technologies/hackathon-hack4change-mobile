@@ -31,6 +31,26 @@ const ActivityIndex = () => {
         })();
     }, []);
 
+    useEffect(() => {
+        if (!isPlaying && !isPaused) {
+            resetLocations();
+            setPlaying(true);
+        }
+    }, []);
+
+    // useEffect(() => {
+    //     if(isPlaying) {
+    //         [  {latitude: 50.102605, longitude: 20.018156, timestamp: 0},
+    //             {latitude: 50.103000, longitude: 20.019000, timestamp: 10},
+    //             {latitude: 50.103500, longitude: 20.019800, timestamp: 20},
+    //             {latitude: 50.104000, longitude: 20.020500, timestamp: 30},
+    //             {latitude: 50.104500, longitude: 20.021200, timestamp: 40},
+    //             {latitude: 50.105000, longitude: 20.022000, timestamp: 50}].forEach(
+    //                 loc => addLocation(loc)
+    //         )
+    //     }
+    // }, [isPlaying]);
+
     const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
         const R = 6371e3;
         const φ1 = lat1 * Math.PI / 180;
