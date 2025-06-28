@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import {ActivityActionsProps, ActivityState} from "@/utils/types";
+import {ActivityActionsProps, ActivityState, SimpleUser} from "@/utils/types";
 
 export const useActivityStore = create<ActivityState & ActivityActionsProps>((set) => ({
     isStarted: false,
@@ -11,7 +11,7 @@ export const useActivityStore = create<ActivityState & ActivityActionsProps>((se
     distance: 0,
     trashCount: 0,
     trashLocations: [],
-
+    user: null,
     setStarted: (value: boolean) => set({isStarted: value}),
     setPlaying: (value: boolean) => set({isPlaying: value}),
     setPaused: (value: boolean) => set({isPaused: value}),
@@ -35,5 +35,6 @@ export const useActivityStore = create<ActivityState & ActivityActionsProps>((se
     addTrashLocation: (location) => set((state) => ({
         trashLocations: [...state.trashLocations, location]
     })),
-    resetTrashLocations: () => set({trashLocations: []})
+    resetTrashLocations: () => set({trashLocations: []}),
+    setUser: (user: SimpleUser) => set({user: user}),
 }));

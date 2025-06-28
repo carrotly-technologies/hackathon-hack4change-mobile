@@ -29,6 +29,7 @@ export type ActivityState = {
     distance: number;
     trashCount: number;
     trashLocations: LocationCoords[];
+    user: SimpleUser | null;
 }
 
 export type ActivityActionsProps = {
@@ -47,4 +48,13 @@ export type ActivityActionsProps = {
     resetTrashCount: () => void;
     addTrashLocation: (location: LocationCoords) => void;
     resetTrashLocations: () => void;
+    setUser: (user: SimpleUser) => void;
+}
+
+export type SimpleUser = {
+    id: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    avatarUrl: string;
 }

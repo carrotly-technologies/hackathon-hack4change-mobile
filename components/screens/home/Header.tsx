@@ -1,8 +1,18 @@
-import {StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
+import {useUserQuery} from "@/api/__generated__/graphql";
 
 const Header = () => {
+
+    const {data, loading, error} = useUserQuery()
+
+    if (loading || !data) {
+        return <View>
+            <ActivityIndicator/>
+        </View>
+    }
+
     return <View style={styles.container}>
-        <Text style={styles.header}>Hej, Gosia!</Text>
+        <Text style={styles.header}>{data.user?.firstname} {data.user?.lastname}</Text>
         <Text style={styles.subheader}>Co chcesz zrobić?</Text>
     </View>
 }

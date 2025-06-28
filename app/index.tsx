@@ -1,13 +1,27 @@
 import {useEffect} from "react";
 import {router} from "expo-router";
+import {useUserQuery} from "@/api/__generated__/graphql";
+import {useActivityStore} from "@/store/activity.store";
 
-const ind = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+const Index = () => {
+    const {data} = useUserQuery()
+    const {setUser} = useActivityStore()
+
     useEffect(() => {
-        router.replace('/home')
-    }, []);
+        if (data?.user) {
+            setUser({
+                email: data.user.email,
+                id: data.user.id,
+                firstname: data.user.firstname,
+                lastname: data.user.lastname,
+                avatarUrl: data.user.avatarUrl ?? "https://picsum.photos/64/64",
+            })
+
+            router.replace('/home')
+        }
+    }, [data]);
 
     return <></>
 }
 
-export default ind;
+export default Index;

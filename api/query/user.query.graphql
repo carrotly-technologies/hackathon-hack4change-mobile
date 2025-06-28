@@ -1,0 +1,9 @@
+query User {
+    user(input: {id: "685fc7347afcbf34e1fd67a6"}) {
+        id
+        email
+        firstname
+        lastname
+        avatarUrl
+    }
+}
