@@ -4,21 +4,214 @@ import Slider from '@react-native-community/slider';
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useRef, useState } from 'react';
+import React, { PropsWithChildren, useRef, useState } from 'react';
 import { Animated, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 
-const ScheduleApp = () => {
+const Coin = ({ size }: { size: number }) => {
+    return (
+        <Svg width={size} height={size} viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Circle cx="13.5" cy="13" r="12.5" fill="#C5F1D4" stroke="#157234" strokeWidth="0.86" />
+            <Path d="M17.21 20.9232C16.1534 21.4704 10.2291 14.6958 9.85176 12.5574C9.71648 11.7909 9.66309 11.0193 10.38 10.4941C10.38 10.4941 7.43673 9.66876 6.71979 8.99349C6.00286 8.31822 6.1915 6.46125 7.43672 6.66757C8.68194 6.87389 9.96496 8.86159 10.1914 8.69337C10.4178 8.52515 9.54987 7.11774 9.54987 5.54212C9.54987 3.96649 11.3234 3.92896 11.8894 5.12945C12.4554 6.32994 11.8894 9.88652 11.8894 9.88652C12.64 9.68084 13.448 9.73994 14.0403 10.1564C15.5874 11.2444 18.2665 20.3761 17.21 20.9232Z" fill="#C5F1D4" />
+            <Path d="M10.38 10.4941C9.66309 11.0193 9.71648 11.7909 9.85176 12.5574C10.2291 14.6958 16.1534 21.4704 17.21 20.9232C18.2665 20.3761 15.5874 11.2444 14.0403 10.1564C13.448 9.73994 12.64 9.68084 11.8894 9.88652M10.38 10.4941C10.38 10.4941 7.43673 9.66876 6.71979 8.99349C6.00286 8.31822 6.1915 6.46125 7.43672 6.66757C8.68194 6.87389 9.96496 8.86159 10.1914 8.69337C10.4178 8.52515 9.54987 7.11774 9.54987 5.54212C9.54987 3.96649 11.3234 3.92896 11.8894 5.12945C12.4554 6.32994 11.8894 9.88652 11.8894 9.88652M10.38 10.4941C10.7951 10.0881 11.3823 10.0255 11.8894 9.88652" stroke="#157234" strokeWidth="0.86" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    );
+}
+
+const Chart = ({ progress, size }: { progress: number, size: number }) => {
+    const strokeWidth = 6;
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+    return (
+        <View style={{
+            width: size,
+            height: size,
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}>
+            <Svg width={size} height={size} style={{ transform: [{ rotate: '-90deg' }] }}>
+                <Circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    stroke="#e0e0e0"
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                />
+                <Circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    stroke="#437454"
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={strokeDashoffset}
+                    strokeLinecap="round"
+                />
+            </Svg>
+        </View>
+    );
+}
+
+const Challenge = ({
+    title,
+    subtitle,
+    remaining,
+    coins,
+    progress,
+    feat
+}: {
+    title: string,
+    subtitle: string,
+    remaining: string,
+    coins: number,
+    progress: number,
+    feat?: string
+}) => {
+    return (
+        <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+        }}>
+            <View style={{
+                alignItems: 'center',
+            }}>
+                <Chart progress={progress} size={48} />
+            </View>
+            <View style={{ flex: 1, marginLeft: 20 }}>
+                <Text style={{
+                    display: feat ? 'flex' : 'none',
+                    color: '#A5A5A5',
+                    marginBottom: 8,
+                }}>{feat}</Text>
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: 8
+                }}>
+                    <Text style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: '#333',
+                        flex: 1
+                    }}>
+                        {title}
+                    </Text>
+                    <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: '#333',
+                            marginRight: 8
+                        }}>
+                            {coins > 0 ? `+${coins}` : ''}
+                        </Text>
+                        <Coin size={32} />
+                    </View>
+                </View>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}>
+                    <Text style={{
+                        fontSize: 14,
+                        color: '#666',
+                        marginBottom: 8
+                    }}>
+                        {subtitle}
+                    </Text>
+                    <Text style={{
+                        fontSize: 12,
+                        color: '#999'
+                    }}>
+                        {remaining}
+                    </Text>
+                </View>
+            </View>
+        </View>
+    )
+}
+
+const Card = ({
+    title,
+    children
+}: PropsWithChildren<{
+    title: string
+}>) => {
+    return (
+        <View style={{
+            backgroundColor: '#fff',
+            borderRadius: 16,
+            padding: 20,
+            marginBottom: 20,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 3
+        }}>
+            <Text style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: '#333',
+                marginBottom: 20
+            }}>
+                {title}
+            </Text>
+
+            {children}
+        </View>
+    );
+}
+
+const Challanges = () => {
+    return (
+        <View style={{ flex: 1, paddingHorizontal: 20, paddingVertical: 19 }}>
+            <Card title='Twoj wyzwania'>
+                <Challenge
+                    title="Przejdź 15 km rowerem w tygodniu"
+                    subtitle="6/15 km"
+                    remaining="3 dni do końca"
+                    coins={45}
+                    progress={40}
+                />
+                <Challenge
+                    title="Zrób 12 000 kroków codziennie"
+                    subtitle="0/12000 kroków"
+                    remaining="13 godzin do końca"
+                    coins={60}
+                    progress={0}
+                />
+            </Card>
+
+            <Card title='Wyzwania partnerskie'>
+                <Challenge
+                    feat='Współpraca: Sabre Polska'
+                    title="Przyjedź do biura rowerem 5 razy"
+                    subtitle='3/5 razy'
+                    remaining='23 dni do końca'
+                    coins={100}
+                    progress={60}
+                />
+            </Card>
+        </View>
+    );
+}
+
+const Events = ({ mode, setMode }: { mode: 'Wydarzenia' | 'Wyzwania', setMode: (mode: 'Wydarzenia' | 'Wyzwania') => void }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [filterModalVisible, setFilterModalVisible] = useState(false);
     const [distanceRange, setDistanceRange] = useState(55);
     const [environmentalFilter, setEnvironmentalFilter] = useState(true);
     const [socialFilter, setSocialFilter] = useState(true);
-
-    const slideAnimation = useRef(new Animated.Value(0));
-    const toggleWidth = useRef(0);
-
-    const [mode, setMode] = useState<'Wydarzenia' | 'Wyzwania'>('Wydarzenia');
 
     const monthNames = [
         'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
@@ -53,13 +246,6 @@ const ScheduleApp = () => {
         return weekDates;
     };
 
-    const navigateWeek = (direction: any) => {
-        const newDate = new Date(selectedDate);
-        newDate.setDate(selectedDate.getDate() + (direction * 7));
-        setSelectedDate(newDate);
-        setCurrentDate(newDate);
-    };
-
     const selectDate = (dateObj: any) => {
         setSelectedDate(dateObj.fullDate);
         setCurrentDate(dateObj.fullDate);
@@ -79,18 +265,6 @@ const ScheduleApp = () => {
         },
     });
 
-    const handleTogglePress = (mode: 'Wydarzenia' | 'Wyzwania') => {
-        setMode(mode);
-        if (toggleWidth.current > 0) {
-            const slidePosition = mode === 'Wydarzenia' ? 0 : toggleWidth.current / 2;
-
-            Animated.timing(slideAnimation.current, {
-                toValue: slidePosition,
-                duration: 200,
-                useNativeDriver: false,
-            }).start();
-        }
-    };
 
     const renderDayItem = (item: any, index: number) => (
         <TouchableOpacity
@@ -149,8 +323,8 @@ const ScheduleApp = () => {
                         maximumValue={100}
                         value={distanceRange}
                         onValueChange={setDistanceRange}
-                        minimumTrackTintColor="#6366f1"
-                        maximumTrackTintColor="#e5e7eb"
+                        minimumTrackTintColor='#437454'
+                        maximumTrackTintColor='#d1e8b0'
                     />
                     <View style={styles.distanceLabels}>
                         <Text style={styles.distanceLabel}>0km</Text>
@@ -186,7 +360,6 @@ const ScheduleApp = () => {
                     style={styles.searchButton}
                     onPress={() => {
                         setFilterModalVisible(false);
-                        // Apply filters here
                     }}
                 >
                     <Text style={styles.searchButtonText}>Wyszukaj</Text>
@@ -194,6 +367,58 @@ const ScheduleApp = () => {
             </View>
         </View>
     );
+
+    return (
+        <View style={{ flex: 1 }}>
+            <View style={styles.calendar}>
+                <View style={styles.header}>
+                    <View style={{ width: 32 }} />
+                    <Text style={styles.monthTitle}>
+                        {monthNames[currentDate.getMonth()]}
+                    </Text>
+                    <Pressable onPress={() => setFilterModalVisible((v) => !v)}>
+                        <View style={{ width: 32, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Ionicons name="filter-circle-outline" size={32} />
+                        </View>
+                    </Pressable>
+                </View>
+
+                <View style={styles.weekContainer}>
+                    {weekDates.map((item, index) => renderDayItem(item, index))}
+                </View>
+
+                <View style={styles.divider} />
+            </View>
+
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                <View style={styles.eventsContainer}>
+                    {data?.events.data?.map(renderEventItem)}
+                </View>
+            </ScrollView>
+            {filterModalVisible && renderFilterModal()}
+        </View>
+    );
+}
+
+const ScheduleApp = () => {
+    const slideAnimation = useRef(new Animated.Value(0));
+    const toggleWidth = useRef(0);
+
+    const [mode, setMode] = useState<'Wydarzenia' | 'Wyzwania'>('Wydarzenia');
+
+    const handleTogglePress = (mode: 'Wydarzenia' | 'Wyzwania') => {
+        setMode(mode);
+        if (toggleWidth.current > 0) {
+            const slidePosition = mode === 'Wydarzenia' ? 0 : toggleWidth.current / 2;
+
+            Animated.timing(slideAnimation.current, {
+                toValue: slidePosition,
+                duration: 200,
+                useNativeDriver: false,
+            }).start();
+        }
+    };
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -253,34 +478,11 @@ const ScheduleApp = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                    <View style={styles.calendar}>
-                        <View style={styles.header}>
-                            <View style={{ width: 32 }} />
-                            <Text style={styles.monthTitle}>
-                                {monthNames[currentDate.getMonth()]}
-                            </Text>
-                            <Pressable onPress={() => setFilterModalVisible((v) => !v)}>
-                                <View style={{ width: 32, flexDirection: 'row', justifyContent: 'center' }}>
-                                    <Ionicons name="filter-circle-outline" size={32} />
-                                </View>
-                            </Pressable>
-                        </View>
-
-                        <View style={styles.weekContainer}>
-                            {weekDates.map((item, index) => renderDayItem(item, index))}
-                        </View>
-
-                        <View style={styles.divider} />
-                    </View>
-
-                    <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                        <View style={styles.eventsContainer}>
-                            {data?.events.data?.map(renderEventItem)}
-                        </View>
-                    </ScrollView>
-                    {filterModalVisible && renderFilterModal()}
-                </View>
+                {mode === 'Wydarzenia' ? (
+                    <Events mode={mode} setMode={setMode} />
+                ) : (
+                    <Challanges />
+                )}
             </LinearGradient>
         </SafeAreaView>
     );
@@ -453,7 +655,7 @@ const styles = StyleSheet.create({
     distanceValue: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#6366f1',
+        color: '#437454',
     },
     slider: {
         width: '100%',
@@ -482,13 +684,13 @@ const styles = StyleSheet.create({
         width: 50,
         height: 30,
         borderRadius: 15,
-        backgroundColor: '#e5e7eb',
+        backgroundColor: '#d1e8b0',
         marginRight: 12,
         justifyContent: 'center',
         padding: 2,
     },
     toggleActive: {
-        backgroundColor: '#6366f1',
+        backgroundColor: '#437454',
     },
     toggleThumb: {
         width: 26,
@@ -505,7 +707,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     searchButton: {
-        backgroundColor: '#6366f1',
+        backgroundColor: '#437454',
         borderRadius: 12,
         padding: 16,
         alignItems: 'center',
@@ -565,20 +767,3 @@ const styles = StyleSheet.create({
 });
 
 export default ScheduleApp;
-
-// Environmental cleanup/nature events
-// https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1563453392212-326f5e854473?w=150&h=150&fit=crop&crop=center
-
-// Tree planting/gardening
-// https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1515023115689-589c33041d3c?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1574263867128-a3d5c1b1debc?w=150&h=150&fit=crop&crop=center
-
-// Recycling/sustainability
-// https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=150&h=150&fit=crop&crop=center
-// https://images.unsplash.com/photo-1502780402662-acc01917406e?w=150&h=150&fit=crop&crop=center
