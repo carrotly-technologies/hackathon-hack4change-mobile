@@ -1,19 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Stack } from "expo-router";
+import React from "react";
 
 const EventsLayout = () => {
-    return <Stack
-        screenOptions={{
-            gestureEnabled: true,
-            headerShown: true,
-        }}>
-        <Stack.Screen name="index" options={{
-            title: 'Nadchodzące wydarzenia',
-            headerRight: () => (
-                <Ionicons name="filter-circle-outline" size={32} />
-            )
-        }} />
-    </Stack>
-}
+    return (
+        <Stack
+            screenOptions={{
+                gestureEnabled: true,
+                headerShown: false,
+            }}>
+            <Stack.Screen name="index" />
+        </Stack>
+    );
+};
 
 export default EventsLayout;
