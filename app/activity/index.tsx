@@ -17,7 +17,9 @@ const ActivityIndex = () => {
     const {
         isPlaying, setPlaying,
         isPaused, setPaused,
+        locations,
         incrementElapsedTime, setElapsedTime,
+        trashLocations,
         currentLocation, setCurrentLocation, addLocation,
         incrementDistance, resetLocations,
         incrementTrashCount, addTrashLocation, type,
@@ -49,6 +51,10 @@ const ActivityIndex = () => {
     }, [data]);
 
     useEffect(() => {
+        console.log(trashLocations)
+    }, [trashLocations]);
+
+    useEffect(() => {
         (async () => {
             const {status} = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
@@ -58,6 +64,7 @@ const ActivityIndex = () => {
             setLocationPermissionGranted(true);
         })();
     }, []);
+
 
     useEffect(() => {
         if (!isPlaying && !isPaused) {
@@ -130,10 +137,28 @@ const ActivityIndex = () => {
                                 incrementDistance(distance);
                                 setCurrentLocation(newLocationData);
                                 addLocation(newLocationData);
+                                addPoint({
+                                    variables: {
+                                        input: {
+                                            activityId: activityId!,
+                                            lon: newLocationData.longitude.toString(),
+                                            lat: newLocationData.latitude.toString(),
+                                        }
+                                    }
+                                })
                             }
                         } else {
                             setCurrentLocation(newLocationData);
                             addLocation(newLocationData);
+                            addPoint({
+                                variables: {
+                                    input: {
+                                        activityId: activityId!,
+                                        lon: newLocationData.longitude.toString(),
+                                        lat: newLocationData.latitude.toString(),
+                                    }
+                                }
+                            })
                         }
                     }
                 );

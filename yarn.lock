@@ -7212,13 +7212,6 @@ react-native-calendars@^1.1313.0:
   optionalDependencies:
     moment "^2.29.4"
 
-react-native-circular-progress-indicator@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.4.2.tgz#5475d045950e6fcc622e54fb63863b274790fb8e"
-  integrity sha512-BlgshzIIIk0TP/CZY+5oyRsHl2Sb2l6cK5tzfmrVETfn6pN8dhOKrV0i3Z6i0SM8wRgncdUUSRBpCPAexh7JoQ==
-  dependencies:
-    react-native-redash "*"
-
 react-native-dropdown-picker@^5.4.6:
   version "5.4.6"
   resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-5.4.6.tgz#3736fc468de4a295e4df8d1f65ed2eadaf9b445f"
@@ -7264,6 +7257,13 @@ react-native-maps@1.20.0:
   dependencies:
     "@types/geojson" "^7946.0.13"
 
+react-native-progress@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-5.0.1.tgz#4e15258b5661c49bad74554352326ca540bb7c58"
+  integrity sha512-TYfJ4auAe5vubDma2yfFvt7ktSI+UCfysqJnkdHEcLXqAitRFOozgF/cLgN5VNi/iLdaf3ga1ETi2RF4jVZ/+g==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-ratings@8.0.4:
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-8.0.4.tgz#efd5ebad8acc08bf98d34d39b18fb7a6813ef991"
@@ -7289,7 +7289,7 @@ react-native-reanimated@3.17.4:
     invariant "^2.2.4"
     react-native-is-edge-to-edge "1.1.7"
 
-react-native-redash@*:
+react-native-redash@^18.1.3:
   version "18.1.3"
   resolved "https://registry.yarnpkg.com/react-native-redash/-/react-native-redash-18.1.3.tgz#725c3efc1908425f1579d8103c27ded94d03e8f6"
   integrity sha512-RKdmAjs87iwA8iD7UOQ11rlQL+tZh56O5+5cV1M37Jk+4uH1Fvs22G3Q5v/wGx+0ncwz3wMolLLCezONOodTlA==

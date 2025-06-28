@@ -33,18 +33,41 @@ const Map = ({points = [], paths = []}: { points?: Point[]; paths?: Path[] }) =>
     }, [currentLocation]);
 
     return (
-        <MapView
+        <
+            MapView
             ref={mapRef}
             style={styles.map}
+            showsUserLocation={true}
+            followsUserLocation={true}
             provider={PROVIDER_GOOGLE}
-            showsUserLocation
-            followsUserLocation
-            initialRegion={{
-                latitude: 54.4082,
-                longitude: 18.6175,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            }}
+            onMapReady={() => {
+                if (points.length > 0 || paths.length > 0) {
+                    const coordinates = [
+                        ...points.map(point => ({latitude: point.latitude, longitude: point.longitude})),
+                        ...paths.flatMap(path => path.coordinates),
+                        ...locations.map(loc => ({latitude: loc.latitude, longitude: loc.longitude})),
+                        ...trashLocations.map(loc => ({latitude: loc.latitude, longitude: loc.longitude})),
+                    ];
+                    if (coordinates.length > 0 && mapRef.current) {
+                        mapRef.current.fitToCoordinates(coordinates, {
+                            edgePadding: {top: 3, right: 3, bottom: 3, left: 3},
+                            animated: true,
+                        });
+                    }
+                }
+            }
+            }
+            initialRegion={
+                {
+                    latitude: 54.4082,
+                    longitude:
+                        18.6175,
+                    latitudeDelta:
+                        0.0922,
+                    longitudeDelta:
+                        0.0421,
+                }
+            }
         >
             {locations.length > 1 && (
                 <Polyline

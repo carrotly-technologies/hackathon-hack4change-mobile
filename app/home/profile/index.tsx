@@ -4,7 +4,7 @@ import {Entypo, Ionicons} from '@expo/vector-icons';
 import Card from "@/components/ui/Card";
 import {useActivityStore} from "@/store/activity.store";
 import CarrotCoin from "@/components/svg/CarrotCoin";
-import CircularProgress from "react-native-circular-progress-indicator";
+import * as Progress from 'react-native-progress';
 
 const ProfileScreen = () => {
     const badges = Array(10).fill(null);
@@ -54,8 +54,8 @@ const ProfileScreen = () => {
 
                 {user?.challengesProgress.map((challenge, index) => (
                     <View key={index} style={styles.challengeItem}>
-                        <CircularProgress value={challenge.progress} radius={30} showProgressValue={false}
-                                          activeStrokeColor={"#437454"}/>
+                        <Progress.Circle progress={challenge.progress / 100}
+                                         color={"#437454"}/>
                         <View style={styles.challengeContent}>
                             <Text style={styles.challengeTitle}>
                                 Przejdź 15 km rowerem w tygodniu
