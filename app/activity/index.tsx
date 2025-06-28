@@ -1,7 +1,7 @@
 import {Alert, SafeAreaView, StyleSheet, TouchableOpacity, View} from "react-native";
 import Map from "@/components/screens/activity/Map";
 import {useActivityStore} from "@/store/activity.store";
-import {Entypo, FontAwesome, Octicons} from "@expo/vector-icons";
+import {Entypo, FontAwesome} from "@expo/vector-icons";
 import React, {useEffect, useRef, useState} from "react";
 import ActivityTrackdown from "@/components/screens/activity/ActivityTrackdown";
 import {router} from "expo-router";
@@ -153,11 +153,10 @@ const ActivityIndex = () => {
         <Map/>
 
         <TouchableOpacity style={styles.plusButtonContainer}>
-            <Octicons name="ellipsis" size={40} color="black"/>
+            <Entypo name="plus" size={35} color="black"/>
         </TouchableOpacity>
 
         <View style={styles.bottomButtonsContainer}>
-            {/* Play button - visible when not playing or when paused */}
             {(!isPlaying || isPaused) && (
                 <TouchableOpacity
                     style={[styles.circleButton, isPaused && styles.pausedButton]}
@@ -167,7 +166,6 @@ const ActivityIndex = () => {
                 </TouchableOpacity>
             )}
 
-            {/* Pause button - visible only when playing and not paused */}
             {(isPlaying && !isPaused) && (
                 <TouchableOpacity
                     style={[styles.circleButton, styles.activeButton]}
@@ -194,7 +192,7 @@ const styles = StyleSheet.create({
         bottom: 120,
         left: 10,
         backgroundColor: "white",
-        padding: 10,
+        padding: 5,
         borderRadius: 10,
         elevation: 10,
         alignItems: "center",

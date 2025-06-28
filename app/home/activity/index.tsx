@@ -1,7 +1,7 @@
 import {SafeAreaView, StyleSheet, TouchableOpacity} from "react-native";
 import Map from "@/components/screens/activity/Map";
 import {useActivityStore} from "@/store/activity.store";
-import {Octicons} from "@expo/vector-icons";
+import {FontAwesome5} from "@expo/vector-icons";
 import React from "react";
 import ActivityDropdown from "@/components/screens/activity/ActivitiyDropdown";
 
@@ -13,7 +13,7 @@ const ActivityIndex = () => {
         <Map/>
 
         <TouchableOpacity style={styles.threeButtonsContainer}>
-            <Octicons name="ellipsis" size={40} color="black"/>
+            <FontAwesome5 name="ellipsis-h" size={30} color="black"/>
         </TouchableOpacity>
 
     </SafeAreaView>
