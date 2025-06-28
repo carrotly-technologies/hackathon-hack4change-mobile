@@ -6,7 +6,7 @@ import Map from "@/components/screens/activity/Map";
 import {router} from "expo-router";
 
 const FinishScreen = () => {
-    const {setPlaying, elapsedTime, setElapsedTime} = useActivityStore();
+    const {setPlaying, elapsedTime, setElapsedTime, distance, resetLocations, setPaused} = useActivityStore();
     const [activityName, setActivityName] = useState("");
     const [description, setDescription] = useState("");
 
@@ -17,6 +17,12 @@ const FinishScreen = () => {
         const secs = seconds % 60;
 
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    // Format distance (meters) to kilometers with 2 decimal places
+    const formatDistance = (meters: number) => {
+        const kilometers = meters / 1000;
+        return kilometers.toFixed(2);
     };
 
     // Stop the timer when the component mounts
@@ -49,7 +55,7 @@ const FinishScreen = () => {
                     </View>
                     <View style={styles.statItem}>
                         <Text style={styles.statLabel}>Dystans</Text>
-                        <Text style={styles.statValue}>3.2<Text style={styles.statUnit}>km</Text></Text>
+                        <Text style={styles.statValue}>{formatDistance(distance)}<Text style={styles.statUnit}>km</Text></Text>
                     </View>
                     <View style={styles.statItem}>
                         <Text style={styles.statLabel}>Ilość śmieci</Text>
@@ -89,10 +95,13 @@ const FinishScreen = () => {
                 <TouchableOpacity
                     style={styles.saveButton}
                     onPress={() => {
-                        // Reset elapsed time when saving activity
+                        // Reset activity state when saving
                         setPlaying(false);
+                        setPaused(false);
                         // Reset elapsed time to 0 for the next activity
                         setElapsedTime(0);
+                        // Reset locations and distance
+                        resetLocations();
                         router.replace('/home/activity');
                     }}
                 >

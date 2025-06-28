@@ -2,7 +2,7 @@ import {StyleSheet, Text, View} from "react-native";
 import {useActivityStore} from "@/store/activity.store";
 
 const ActivityTrackdown = () => {
-    const {elapsedTime} = useActivityStore();
+    const {elapsedTime, distance} = useActivityStore();
 
     // Format elapsed time (seconds) to HH:MM:SS
     const formatTime = (seconds: number) => {
@@ -13,6 +13,12 @@ const ActivityTrackdown = () => {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
+    // Format distance (meters) to kilometers with 2 decimal places
+    const formatDistance = (meters: number) => {
+        const kilometers = meters / 1000;
+        return kilometers.toFixed(2);
+    };
+
     return <View style={styles.container}>
         <View style={styles.entryContainer}>
             <Text style={styles.header}>Time</Text>
@@ -20,7 +26,7 @@ const ActivityTrackdown = () => {
         </View>
         <View style={styles.entryContainer}>
             <Text style={styles.header}>Distance</Text>
-            <Text style={styles.value}>0.00 km</Text>
+            <Text style={styles.value}>{formatDistance(distance)} <Text style={styles.unit}>km</Text></Text>
         </View>
     </View>
 }
@@ -40,6 +46,10 @@ const styles = StyleSheet.create({
     },
     value: {
         fontSize: 32
+    },
+    unit: {
+        fontSize: 18,
+        color: '#666'
     }
 })
 
