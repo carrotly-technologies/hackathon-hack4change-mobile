@@ -1,14 +1,28 @@
 import {SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {useActivityStore} from "@/store/activity.store";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import ActivitiyDropdown from "@/components/screens/activity/ActivitiyDropdown";
 import Map from "@/components/screens/activity/Map";
 import {router} from "expo-router";
 
 const FinishScreen = () => {
-    const {} = useActivityStore();
+    const {setPlaying, elapsedTime, setElapsedTime} = useActivityStore();
     const [activityName, setActivityName] = useState("");
     const [description, setDescription] = useState("");
+
+    // Format elapsed time (seconds) to HH:MM:SS
+    const formatTime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    // Stop the timer when the component mounts
+    useEffect(() => {
+        setPlaying(false);
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -31,7 +45,7 @@ const FinishScreen = () => {
                 <View style={styles.statsGrid}>
                     <View style={styles.statItem}>
                         <Text style={styles.statLabel}>Czas</Text>
-                        <Text style={styles.statValue}>01:03:14</Text>
+                        <Text style={styles.statValue}>{formatTime(elapsedTime)}</Text>
                     </View>
                     <View style={styles.statItem}>
                         <Text style={styles.statLabel}>Dystans</Text>
@@ -72,7 +86,16 @@ const FinishScreen = () => {
                     />
                 </View>
 
-                <TouchableOpacity style={styles.saveButton} onPress={() => router.replace('/home/activity')}>
+                <TouchableOpacity
+                    style={styles.saveButton}
+                    onPress={() => {
+                        // Reset elapsed time when saving activity
+                        setPlaying(false);
+                        // Reset elapsed time to 0 for the next activity
+                        setElapsedTime(0);
+                        router.replace('/home/activity');
+                    }}
+                >
                     <Text style={styles.saveButtonText}>Zapisz aktywność</Text>
                 </TouchableOpacity>
             </ScrollView>

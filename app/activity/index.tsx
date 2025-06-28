@@ -2,12 +2,43 @@ import {SafeAreaView, StyleSheet, TouchableOpacity, View} from "react-native";
 import Map from "@/components/screens/activity/Map";
 import {useActivityStore} from "@/store/activity.store";
 import {Entypo, Octicons} from "@expo/vector-icons";
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import ActivityTrackdown from "@/components/screens/activity/ActivityTrackdown";
 import {router} from "expo-router";
 
 const ActivityIndex = () => {
-    const {isPlaying} = useActivityStore();
+    const {isPlaying, setPlaying, incrementElapsedTime, setElapsedTime} = useActivityStore();
+    const timerRef = useRef<number | null>(null);
+
+    // Set up timer effect
+    useEffect(() => {
+        if (isPlaying) {
+            timerRef.current = window.setInterval(() => {
+                incrementElapsedTime();
+            }, 1000);
+        } else if (timerRef.current) {
+            // Clear the timer when not playing
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
+
+        // Cleanup on unmount
+        return () => {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+            }
+        };
+    }, [isPlaying, incrementElapsedTime]);
+
+    const handlePlayPress = () => {
+        setPlaying(true);
+    };
+
+    const handleStopPress = () => {
+        setPlaying(false);
+        router.replace("/activity/finish");
+    };
 
     return <SafeAreaView style={{flex: 1}}>
         <ActivityTrackdown/>
@@ -18,11 +49,17 @@ const ActivityIndex = () => {
         </TouchableOpacity>
 
         <View style={styles.bottomButtonsContainer}>
-            <TouchableOpacity style={styles.circleButton} onPress={() => {
-            }}>
-                <Entypo name="controller-play" size={50} color="black"/>
+            <TouchableOpacity
+                style={[styles.circleButton, isPlaying && styles.activeButton]}
+                onPress={handlePlayPress}
+                disabled={isPlaying}
+            >
+                <Entypo name="controller-play" size={50} color={isPlaying ? "white" : "black"}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.circleButton} onPress={() => router.replace("/activity/finish")}>
+            <TouchableOpacity
+                style={styles.circleButton}
+                onPress={handleStopPress}
+            >
                 <Entypo name="controller-stop" size={50} color="black"/>
             </TouchableOpacity>
         </View>
@@ -65,6 +102,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         elevation: 5
+    },
+    activeButton: {
+        backgroundColor: "green",
+        borderColor: "white",
     }
 })
 

@@ -15,9 +15,12 @@ export type MemoFeedProps = {
 export type ActivityState = {
     isStarted: boolean;
     isPlaying: boolean;
+    elapsedTime: number; // Time in seconds
 }
 
 export type ActivityActionsProps = {
     setStarted: (isStarted: boolean) => void;
     setPlaying: (isPlaying: boolean) => void;
+    setElapsedTime: (elapsedTime: number) => void;
+    incrementElapsedTime: () => void;
 }
