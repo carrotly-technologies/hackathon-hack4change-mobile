@@ -14,6 +14,7 @@ const MemoFeed: FC<MemoFeedProps> = ({feed}) => {
                             containerStyle={{width: 50, height: 50}}/>
                     <View style={styles.usernameContainer}>
                         <Text style={styles.usernameTextStyle}>{item.name}</Text>
+                        <Text>{item.details}</Text>
                     </View>
                 </View>
                 <View style={styles.memoParametersStyle}>

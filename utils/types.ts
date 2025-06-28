@@ -5,6 +5,7 @@ export type MemoFeed = {
     length: number;
     points: number;
     achievements: string;
+    details: string;
 }
 
 export type MemoFeedProps = {

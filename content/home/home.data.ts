@@ -7,7 +7,8 @@ export const memoFeedData: MemoFeed[] = [
         name: "John Doe",
         length: 5,
         points: 100,
-        achievements: "First Milestone"
+        achievements: "First Milestone",
+        details: "Dziś, 9:13 | Park Zdrojowy Brzeno"
     },
     {
         id: "2",
@@ -15,7 +16,8 @@ export const memoFeedData: MemoFeed[] = [
         name: "Jane Smith",
         length: 7,
         points: 150,
-        achievements: "Top Scorer"
+        achievements: "Top Scorer",
+        details: "Dziś, 9:13 | Park Zdrojowy Brzeno"
     },
     {
         id: "3",
@@ -23,7 +25,8 @@ export const memoFeedData: MemoFeed[] = [
         name: "Mike Johnson",
         length: 3,
         points: 80,
-        achievements: "Quick Learner"
+        achievements: "Quick Learner",
+        details: "Dziś, 9:13 | Park Zdrojowy Brzeno"
     }
 ];
 
