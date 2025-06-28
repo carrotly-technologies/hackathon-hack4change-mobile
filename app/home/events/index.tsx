@@ -6,21 +6,6 @@ import { Image } from 'expo-image';
 import React, { useState } from 'react';
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-function Modal() {
-    return (
-        <View style={styles.container}>
-            <View style={{ width: '100%', backgroundColor: 'red' }}>
-                <Text>Modal header</Text>
-                <Text>Modal screen</Text>
-                <Text>Modal screen</Text>
-                <Text>Modal screen</Text>
-                <Text>Modal screen</Text>
-                <Text>Modal screen</Text>
-            </View>
-        </View>
-    );
-}
-
 const ScheduleApp = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());

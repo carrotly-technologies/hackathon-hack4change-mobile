@@ -1,7 +1,8 @@
-import { useRankingQuery } from '@/api/__generated__/graphql';
 import { Image } from 'expo-image';
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type User = {
     id: number;
@@ -14,46 +15,73 @@ type User = {
 const RankingScreen: React.FC = () => {
     const [selectedPeriod, setSelectedPeriod] = useState<'Tygodniowe' | 'Ogólne'>('Tygodniowe');
 
-    const { data, refetch } = useRankingQuery({
-        variables: {
-            input: {
-                limit: 10,
-            }
-        },
-    });
+    const mockUsers: User[] = [
+        { id: 1, uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 1237, position: 1 },
+        { id: 2, uri: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 1237, position: 2 },
+        { id: 3, uri: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 1237, position: 3 },
+        { id: 4, uri: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 4 },
+        { id: 5, uri: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 5 },
+        { id: 6, uri: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 6 },
+        { id: 7, uri: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=150&h=150&fit=crop&crop=face', name: 'Jan Kowalski', points: 345, position: 7 },
+    ];
 
-    useEffect(() => {
-        refetch({
-            input: {
-                startDate: selectedPeriod === 'Tygodniowe' ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
-                endDate: selectedPeriod === 'Tygodniowe' ? new Date() : null,
-                limit: 10,
-            }
-        })
-    }, [selectedPeriod])
+    const topUsers = mockUsers.slice(0, 3);
+    const otherUsers = mockUsers.slice(3);
 
-    const topUsers: User[] = data?.leaderboard?.slice(0, 3).map((v, i) => ({ id: v.id, uri: v.avatarUrl, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 1 })) || [];
-    const otherUsers: User[] = data?.leaderboard?.slice(3).map((v, i) => ({ id: v.id, uri: v.avatarUrl, name: `${v.firstname} ${v.lastname}`, points: v.totalPoints, position: i + 4 })) || [];
-
-    const UserAvatar: React.FC<{ size?: number, uri?: string | null }> = ({ size = 60, uri }) => (
-        <View style={[styles.avatar, { width: size, height: size }]}>
-            {uri ? <Image source={{ uri }} style={{ width: size, height: size, borderRadius: '100%' }} /> : <View style={styles.avatarIcon}>
-                <View style={styles.head} />
-                <View style={styles.body} />
-            </View>}
+    const UserAvatar: React.FC<{ size?: number; uri?: string | null }> = ({ size = 60, uri }) => (
+        <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}>
+            {uri ? (
+                <Image
+                    source={{ uri }}
+                    style={{ width: size, height: size, borderRadius: size / 2 }}
+                />
+            ) : (
+                <View style={styles.avatarIcon}>
+                    <View style={styles.head} />
+                    <View style={styles.body} />
+                </View>
+            )}
         </View>
     );
 
-    const PodiumItem: React.FC<{ user: User; height: number }> = ({ user, height }) => (
-        <View style={[styles.podiumItem, { height }]}>
-            <UserAvatar size={user.position === 1 ? 70 : 60} uri={user.uri} />
-            <Text style={styles.userName}>{user.name}</Text>
-            <Text style={styles.userPoints}>{user.points} points</Text>
-            <View style={[styles.podiumBase, { height }]}>
-                <Text style={styles.positionNumber}>{user.position}</Text>
+    const PodiumUser: React.FC<{ user: User; position: number }> = ({ user, position }) => {
+        const getTopPosition = () => {
+            switch (position) {
+                case 1: return 0;
+                case 2: return 50;
+                case 3: return 75;
+                default: return 0;
+            }
+        };
+
+        const getAvatarSize = () => {
+            return position === 1 ? 80 : 65;
+        };
+
+        const getHorizontalPosition = () => {
+            switch (position) {
+                case 1: return '50%';
+                case 2: return '15%';
+                case 3: return '78%';
+                default: return '50%';
+            }
+        };
+
+        return (
+            <View style={[
+                styles.podiumUser,
+                {
+                    top: getTopPosition(),
+                    left: getHorizontalPosition(),
+                    transform: [{ translateX: position === 1 ? -40 : position === 2 ? -32.5 : -32.5 }]
+                }
+            ]}>
+                <UserAvatar size={getAvatarSize()} uri={user.uri} />
+                <Text style={styles.podiumUserName}>{user.name}</Text>
+                <Text style={styles.podiumUserPoints}>{user.points} punktów</Text>
             </View>
-        </View>
-    );
+        );
+    };
 
     const ListItem: React.FC<{ user: User }> = ({ user }) => (
         <View style={styles.listItem}>
@@ -63,129 +91,174 @@ const RankingScreen: React.FC = () => {
             <UserAvatar size={50} uri={user.uri} />
             <View style={styles.userInfo}>
                 <Text style={styles.listUserName}>{user.name}</Text>
-                <Text style={styles.listUserPoints}>{user.points} points</Text>
+            </View>
+            <View style={styles.pointsInfo}>
+                <Text style={styles.listUserPoints}>{user.points} pkt</Text>
             </View>
         </View>
     );
 
-
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <SafeAreaView style={styles.container} >
+            <StatusBar barStyle="dark-content" />
+            <LinearGradient
+                start={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                colors={['#eeeeee', '#d1e8b0']}
+                style={{ flex: 1 }}
+            >
                 <View style={styles.toggleContainer}>
-                    <TouchableOpacity
-                        style={[
-                            styles.toggleButton,
-                            selectedPeriod === 'Tygodniowe' && styles.toggleButtonActive,
-                        ]}
-                        onPress={() => setSelectedPeriod('Tygodniowe')}
-                    >
-                        <Text
+                    <View style={styles.toggleBorder}>
+                        <TouchableOpacity
                             style={[
-                                styles.toggleText,
-                                selectedPeriod === 'Tygodniowe' && styles.toggleTextActive,
+                                styles.toggleButton,
+                                styles.toggleButtonLeft,
+                                selectedPeriod === 'Tygodniowe' && styles.toggleButtonActive,
                             ]}
+                            onPress={() => setSelectedPeriod('Tygodniowe')}
                         >
-                            Tygodniowe
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[
-                            styles.toggleButton,
-                            selectedPeriod === 'Ogólne' && styles.toggleButtonActive,
-                        ]}
-                        onPress={() => setSelectedPeriod('Ogólne')}
-                    >
-                        <Text
+                            <Text
+                                style={[
+                                    styles.toggleText,
+                                    selectedPeriod === 'Tygodniowe' && styles.toggleTextActive,
+                                ]}
+                            >
+                                Tygodniowe
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
                             style={[
-                                styles.toggleText,
-                                selectedPeriod === 'Ogólne' && styles.toggleTextActive,
+                                styles.toggleButton,
+                                styles.toggleButtonRight,
+                                selectedPeriod === 'Ogólne' && styles.toggleButtonActive,
                             ]}
+                            onPress={() => setSelectedPeriod('Ogólne')}
                         >
-                            Ogólne
-                        </Text>
-                    </TouchableOpacity>
+                            <Text
+                                style={[
+                                    styles.toggleText,
+                                    selectedPeriod === 'Ogólne' && styles.toggleTextActive,
+                                ]}
+                            >
+                                Ogólne
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+                <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+                    <View style={styles.podiumSection}>
+                        <View style={styles.podiumContainer}>
+                            {topUsers.map((user) => (
+                                <PodiumUser key={user.id} user={user} position={user.position} />
+                            ))}
+                        </View>
+                        <Image
+                            source={require('../../../assets/images/podium.png')}
+                            style={styles.podiumImage}
+                            contentFit="contain"
+                        />
+                    </View>
 
-                <View style={styles.podiumContainer}>
-                    {topUsers[1] && <PodiumItem user={topUsers[1]} height={120} />}
-                    {topUsers[0] && <PodiumItem user={topUsers[0]} height={150} />}
-                    {topUsers[2] && <PodiumItem user={topUsers[2]} height={100} />}
-                </View>
-
-                <View style={styles.listContainer}>
-                    {otherUsers.map((user) => (
-                        <ListItem key={user.id} user={user} />
-                    ))}
-                </View>
-            </ScrollView>
+                    <View style={styles.listContainer}>
+                        <View style={styles.listItems}>
+                            {otherUsers.map((user) => (
+                                <ListItem key={user.id} user={user} />
+                            ))}
+                        </View>
+                    </View>
+                </ScrollView>
+            </LinearGradient>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#f8f9fa',
+        flex: 1,
+        backgroundColor: '#fff',
     },
     content: {
-        paddingHorizontal: 20,
+        flex: 1,
+        paddingVertical: 19,
     },
     toggleContainer: {
+        backgroundColor: '#fff',
+        borderBottomLeftRadius: 16,
+        borderBottomRightRadius: 16,
+        paddingHorizontal: 9,
+        paddingVertical: 19,
+    },
+    toggleBorder: {
         flexDirection: 'row',
-        backgroundColor: '#e9ecef',
         borderRadius: 25,
-        padding: 4,
-        marginBottom: 30,
     },
     toggleButton: {
         flex: 1,
-        paddingVertical: 10,
+        paddingVertical: 12,
         paddingHorizontal: 20,
-        borderRadius: 20,
         alignItems: 'center',
+        borderWidth: 2,
+    },
+    toggleButtonLeft: {
+        borderTopLeftRadius: 21,
+        borderBottomLeftRadius: 21,
+        borderRightWidth: 0,
+    },
+    toggleButtonRight: {
+        borderTopRightRadius: 21,
+        borderBottomRightRadius: 21,
+        borderLeftWidth: 0
     },
     toggleButtonActive: {
-        backgroundColor: '#6f42c1',
+        borderColor: '#437454',
+        backgroundColor: '#22c55e',
     },
     toggleText: {
-        color: '#6c757d',
-        fontWeight: '500',
+        color: '#666',
+        fontWeight: '600',
+        fontSize: 16,
     },
     toggleTextActive: {
         color: '#fff',
     },
+    podiumSection: {
+        height: 320,
+    },
     podiumContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        marginBottom: 90,
-        paddingHorizontal: 10,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1,
     },
-    podiumItem: {
+    podiumUser: {
+        position: 'absolute',
         alignItems: 'center',
-        flex: 1,
-        marginHorizontal: 5,
     },
-    podiumBase: {
-        backgroundColor: '#e9ecef',
-        width: '100%',
-        marginTop: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
-    },
-    positionNumber: {
-        fontSize: 48,
-        fontWeight: 'bold',
+    podiumUserName: {
+        fontSize: 14,
+        fontWeight: '600',
         color: '#000',
+        textAlign: 'center',
+        marginTop: 8,
+        marginBottom: 4,
+    },
+    podiumUserPoints: {
+        fontSize: 12,
+        color: '#666',
+        textAlign: 'center',
+    },
+    podiumImage: {
+        width: null,
+        height: 240,
+        resizeMode: 'cover',
+        marginHorizontal: 16,
+        marginTop: 120
     },
     avatar: {
         backgroundColor: '#e9ecef',
-        borderRadius: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 8,
     },
     avatarIcon: {
         alignItems: 'center',
@@ -204,64 +277,60 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
         backgroundColor: '#adb5bd',
     },
-    userName: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: '#000',
-        textAlign: 'center',
-        marginBottom: 2,
-    },
-    userPoints: {
-        fontSize: 12,
-        color: '#6c757d',
-        textAlign: 'center',
-    },
     listContainer: {
-        gap: 15,
-        paddingBottom: 20,
+        paddingBottom: 80,
+    },
+    listItems: {
+        gap: 12,
+        backgroundColor: '#fff',
+        padding: 12,
+        marginHorizontal: 8,
+        borderRadius: 16,
     },
     listItem: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#fff',
-        padding: 15,
-        borderRadius: 12,
+        padding: 16,
+        borderRadius: 16,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 1,
+            height: 2,
         },
         shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 2,
+        shadowRadius: 4,
+        elevation: 3,
     },
     positionCircle: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-        backgroundColor: '#e9ecef',
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        backgroundColor: '#437454',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 15,
+        marginRight: 16,
     },
     positionText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#000',
+        color: '#fff',
     },
     userInfo: {
-        marginLeft: 15,
+        marginLeft: 12,
         flex: 1,
+    },
+    pointsInfo: {
     },
     listUserName: {
         fontSize: 16,
-        fontWeight: '600',
-        color: '#000',
-        marginBottom: 2,
+        fontWeight: 500,
+        color: '#21252B',
     },
     listUserPoints: {
-        fontSize: 14,
-        color: '#6c757d',
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#21252B',
     },
 });
 
