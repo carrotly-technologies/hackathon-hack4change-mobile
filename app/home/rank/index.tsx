@@ -1,7 +1,7 @@
-import { useRankingQuery } from '@/api/__generated__/graphql';
+import { RankingQuery, useRankingQuery } from '@/api/__generated__/graphql';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Animated, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -14,65 +14,55 @@ type User = {
 };
 
 const useRanking = (mode: 'Tygodniowe' | 'Ogólne') => {
-    const { data, refetch } = useRankingQuery({
-        variables: {
-            input: {
-                limit: 10,
-            },
+    const variables = useMemo(() => ({
+        input: {
+            startDate: mode === 'Tygodniowe' ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
+            endDate: mode === 'Tygodniowe' ? new Date() : null,
+            limit: 10,
         },
+    }), [mode]);
+
+    const { data } = useRankingQuery({
+        variables,
+        fetchPolicy: 'network-only',
     });
 
-    useEffect(() => {
-        async function fetch() {
-            console.log('#1', `Fetching ranking for mode: ${mode}`);
+    const serialize = (user: RankingQuery['leaderboard'][number], num: number): User => {
+        return ({
+            id: user.id,
+            uri: user.avatarUrl ?? null,
+            name: `${user.firstname} ${user.lastname}`,
+            points: user.totalPoints,
+            position: num
+        })
+    };
 
-            await refetch({
-                input: {
-                    startDate: mode === 'Tygodniowe' ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
-                    endDate: mode === 'Tygodniowe' ? new Date() : null,
-                    limit: 10,
-                },
-
-            });
-        }
-
-        fetch();
-    }, [mode, refetch]);
-
-    return data?.leaderboard.map((user, index) => ({
-        id: user.id,
-        uri: user.avatarUrl ?? null,
-        name: `${user.firstname} ${user.lastname}`,
-        points: user.totalPoints,
-        position: index + 1,
-    })) || [];
-}
+    return {
+        topUsers: data?.leaderboard.slice(0, 3).map((user, index) => serialize(user, index + 1)) || [],
+        otherUsers: data?.leaderboard.slice(3).map((user, index) => serialize(user, index + 4)) || [],
+    };
+};
 
 const RankingScreen: React.FC = () => {
-    const [selectedPeriod, setSelectedPeriod] = useState<'Tygodniowe' | 'Ogólne'>('Tygodniowe');
     const slideAnimation = useRef(new Animated.Value(0));
     const toggleWidth = useRef(0);
+    const [selectedPeriod, setSelectedPeriod] = useState<'Tygodniowe' | 'Ogólne'>('Tygodniowe');
+    const { topUsers: a1, otherUsers: a2 } = useRanking('Tygodniowe');
+    const { topUsers: b1, otherUsers: b2 } = useRanking('Ogólne');
 
-    const ranking = useRanking(selectedPeriod);
-
-    const topUsers = ranking.slice(0, 3);
-    const otherUsers = ranking.slice(3);
-
-    console.log('#2', ranking.map(v => v.name).join(', '));
-
-    const animateSlide = (toValue: number) => {
-        Animated.timing(slideAnimation.current, {
-            toValue,
-            duration: 200,
-            useNativeDriver: false,
-        }).start();
-    };
+    const topUsers = selectedPeriod === 'Tygodniowe' ? a1 : b1;
+    const otherUsers = selectedPeriod === 'Tygodniowe' ? a2 : b2;
 
     const handleTogglePress = (period: 'Tygodniowe' | 'Ogólne') => {
         setSelectedPeriod(period);
         if (toggleWidth.current > 0) {
             const slidePosition = period === 'Tygodniowe' ? 0 : toggleWidth.current / 2;
-            animateSlide(slidePosition);
+
+            Animated.timing(slideAnimation.current, {
+                toValue: slidePosition,
+                duration: 200,
+                useNativeDriver: false,
+            }).start();
         }
     };
 
@@ -391,6 +381,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#21252B',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 100,
+    },
+    loadingText: {
+        fontSize: 16,
+        color: '#666',
     },
 });
 
