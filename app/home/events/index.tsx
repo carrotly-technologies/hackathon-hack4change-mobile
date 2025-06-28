@@ -1,4 +1,5 @@
-import { EventObject, useEventsQuery } from '@/api/__generated__/graphql';
+import { EventObject, Sort, useEventsQuery } from '@/api/__generated__/graphql';
+import { format } from 'date-fns';
 import { Image } from 'expo-image';
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
@@ -57,8 +58,12 @@ const ScheduleApp = () => {
     const { data } = useEventsQuery({
         variables: {
             pagination: {},
-            input: {},
-            sort: {}
+            input: {
+                date: format(selectedDate, 'yyyy-MM-dd'),
+            },
+            sort: {
+                eventType: { direction: Sort.Desc }
+            }
         },
     });
 

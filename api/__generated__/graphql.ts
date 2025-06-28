@@ -733,7 +733,7 @@ export type EventsQueryVariables = Exact<{
 }>;
 
 
-export type EventsQuery = { __typename?: 'Query', events: { __typename?: 'EventPaginationResponse', data: Array<{ __typename?: 'EventObject', id: any, name: string, time: any, place: string, localization: Array<number>, imageUrl: string, eventType: EventType, userIds: Array<string>, createdAt: any, updatedAt: any }>, metadata: { __typename?: 'PaginationMetadata', pageSize: number, currentPage: number, totalPages: number, totalCount: number } } };
+export type EventsQuery = { __typename?: 'Query', events: { __typename?: 'EventPaginationResponse', data: Array<{ __typename?: 'EventObject', id: any, name: string, time: any, date: any, place: string, localization: Array<number>, imageUrl: string, eventType: EventType, userIds: Array<string>, createdAt: any, updatedAt: any }>, metadata: { __typename?: 'PaginationMetadata', pageSize: number, currentPage: number, totalPages: number, totalCount: number } } };
 
 export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -753,6 +753,7 @@ export const EventsDocument = gql`
       id
       name
       time
+      date
       place
       localization
       imageUrl
