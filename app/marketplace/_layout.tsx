@@ -17,7 +17,7 @@ const MarketplaceLayout = () => {
             </TouchableOpacity>
         }}/>
         <Stack.Screen name="[id]" options={{
-            title: 'Coin market', headerLeft: () => <TouchableOpacity onPress={() => {
+            title: 'Szczegóły nagrody', headerLeft: () => <TouchableOpacity onPress={() => {
                 router.back()
             }}>
                 <Entypo name="chevron-left" size={25} color="#437454"/>

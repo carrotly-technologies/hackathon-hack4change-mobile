@@ -1,10 +1,10 @@
-import { useUserQuery } from "@/api/__generated__/graphql";
-import { useActivityStore } from "@/store/activity.store";
-import { router } from "expo-router";
-import { useEffect } from "react";
+import {useUserQuery} from "@/api/__generated__/graphql";
+import {useActivityStore} from "@/store/activity.store";
+import {router} from "expo-router";
+import {useEffect} from "react";
 
 const Index = () => {
-  const { data } = useUserQuery()
+  const {data, error, loading} = useUserQuery()
   const { setUser } = useActivityStore()
 
   useEffect(() => {

@@ -1,0 +1,5 @@
+mutation MarketplacePurchase($input: MarketplacePurchaseInput!) {
+    marketplacePurchase(input: $input) {
+        id
+    }
+}

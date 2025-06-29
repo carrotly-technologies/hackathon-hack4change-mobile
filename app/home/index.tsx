@@ -1,9 +1,9 @@
-import { useActivitiesQuery } from "@/api/__generated__/graphql";
+import {useActivitiesQuery} from "@/api/__generated__/graphql";
 import MemoFeed from "@/components/screens/common/MemoFeed";
 import Header from "@/components/screens/home/Header";
-import { LinearGradient } from "expo-linear-gradient";
-import { ScrollView, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import {LinearGradient} from "expo-linear-gradient";
+import {ScrollView, View} from 'react-native';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
 export default function Index() {
     const { data, loading, error } = useActivitiesQuery({
@@ -31,7 +31,7 @@ export default function Index() {
                         <Header />
                         {data && <MemoFeed feed={data?.activities.data.map(dta => ({
                             id: dta.id,
-                            name: dta.name,
+                            name: dta.name ?? "",
                             details: String(dta.durationTime),
                             avatar: dta.user?.avatarUrl ?? "",
                             length: dta.distance,

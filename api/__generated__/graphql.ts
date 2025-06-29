@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import {gql} from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -970,6 +971,16 @@ export type MarketplaceDetailsQuery = {
   } | null
 };
 
+export type MarketplacePurchaseMutationVariables = Exact<{
+  input: MarketplacePurchaseInput;
+}>;
+
+
+export type MarketplacePurchaseMutation = {
+  __typename?: 'Mutation',
+  marketplacePurchase: { __typename?: 'MarketplaceObject', id: any }
+};
+
 export type MarketplacesQueryVariables = Exact<{
   input: MarketplaceFindManyInput;
 }>;
@@ -1416,21 +1427,52 @@ export function useMarketplaceDetailsQuery(baseOptions: Apollo.QueryHookOptions<
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
 }
-
 export function useMarketplaceDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>) {
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
 }
-
 export function useMarketplaceDetailsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
   return Apollo.useSuspenseQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
 }
-
 export type MarketplaceDetailsQueryHookResult = ReturnType<typeof useMarketplaceDetailsQuery>;
 export type MarketplaceDetailsLazyQueryHookResult = ReturnType<typeof useMarketplaceDetailsLazyQuery>;
 export type MarketplaceDetailsSuspenseQueryHookResult = ReturnType<typeof useMarketplaceDetailsSuspenseQuery>;
 export type MarketplaceDetailsQueryResult = Apollo.QueryResult<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>;
+export const MarketplacePurchaseDocument = gql`
+  mutation MarketplacePurchase($input: MarketplacePurchaseInput!) {
+    marketplacePurchase(input: $input) {
+      id
+    }
+  }
+`;
+export type MarketplacePurchaseMutationFn = Apollo.MutationFunction<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>;
+
+/**
+ * __useMarketplacePurchaseMutation__
+ *
+ * To run a mutation, you first call `useMarketplacePurchaseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMarketplacePurchaseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [marketplacePurchaseMutation, { data, loading, error }] = useMarketplacePurchaseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMarketplacePurchaseMutation(baseOptions?: Apollo.MutationHookOptions<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>(MarketplacePurchaseDocument, options);
+}
+
+export type MarketplacePurchaseMutationHookResult = ReturnType<typeof useMarketplacePurchaseMutation>;
+export type MarketplacePurchaseMutationResult = Apollo.MutationResult<MarketplacePurchaseMutation>;
+export type MarketplacePurchaseMutationOptions = Apollo.BaseMutationOptions<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>;
 export const MarketplacesDocument = gql`
   query Marketplaces($input: MarketplaceFindManyInput!) {
     marketplaces(input: $input, pagination: {}, sort: {}) {
@@ -1469,17 +1511,14 @@ export function useMarketplacesQuery(baseOptions: Apollo.QueryHookOptions<Market
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
 }
-
 export function useMarketplacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables>) {
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
 }
-
 export function useMarketplacesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables>) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
   return Apollo.useSuspenseQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
 }
-
 export type MarketplacesQueryHookResult = ReturnType<typeof useMarketplacesQuery>;
 export type MarketplacesLazyQueryHookResult = ReturnType<typeof useMarketplacesLazyQuery>;
 export type MarketplacesSuspenseQueryHookResult = ReturnType<typeof useMarketplacesSuspenseQuery>;

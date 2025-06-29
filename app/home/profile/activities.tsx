@@ -1,16 +1,27 @@
 import {ScrollView, View} from "react-native";
-import {useActivitiesQuery} from "@/api/__generated__/graphql";
+import {Sort, useActivitiesQuery} from "@/api/__generated__/graphql";
 import MemoFeed from "@/components/screens/common/MemoFeed";
 import React from "react";
+import * as Progress from 'react-native-progress';
 
 const ProfileActivities = () => {
     const {data, loading, error} = useActivitiesQuery({
         variables: {
             input: {},
-            sort: {},
-            pagination: {}
+            sort: {
+                createdAt: {
+                    direction: Sort.Asc
+                }
+            },
+            pagination: {
+                pageSize: 100
+            }
         }
     })
+
+    if (loading) {
+        return <Progress.Circle/>
+    }
 
     return <ScrollView>
         {data && <MemoFeed feed={data?.activities.data.map(dta => ({
