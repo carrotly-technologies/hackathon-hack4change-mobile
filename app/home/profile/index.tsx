@@ -1,50 +1,50 @@
-import React from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
-import {Entypo, Ionicons} from '@expo/vector-icons';
-import Card from "@/components/ui/Card";
-import {useActivityStore} from "@/store/activity.store";
 import CarrotCoin from "@/components/svg/CarrotCoin";
+import Card from "@/components/ui/Card";
+import { useActivityStore } from "@/store/activity.store";
+import { Entypo, Ionicons } from '@expo/vector-icons';
+import { router } from "expo-router";
+import React from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 import * as Progress from 'react-native-progress';
-import {router} from "expo-router";
 
 const ProfileScreen = () => {
     const badges = Array(10).fill(null);
-    const {user} = useActivityStore();
+    const { user } = useActivityStore();
 
     return (
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-                <View style={styles.statsContainer}>
-                    <View style={styles.statCard}>
-                        <Text style={styles.statLabel}>Punkty rankingowe</Text>
-                        <Text style={styles.statValue}>234</Text>
+            <View style={styles.statsContainer}>
+                <View style={styles.statCard}>
+                    <Text style={styles.statLabel}>Punkty rankingowe</Text>
+                    <Text style={styles.statValue}>234</Text>
+                </View>
+                <View style={styles.statCard}>
+                    <View style={styles.coinMarketHeader}>
+                        <Text style={styles.statLabel}>Coin market</Text>
+                        <TouchableOpacity onPress={() => router.push("/marketplace")}>
+                            <Entypo name="chevron-with-circle-right" size={25} color="#437454" />
+                        </TouchableOpacity>
                     </View>
-                    <View style={styles.statCard}>
-                        <View style={styles.coinMarketHeader}>
-                            <Text style={styles.statLabel}>Coin market</Text>
-                            <TouchableOpacity onPress={() => router.push("/marketplace")}>
-                                <Entypo name="chevron-with-circle-right" size={25} color="#437454"/>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.coinValue}>
-                            <TouchableOpacity>
-                                <CarrotCoin width={38} height={38}/>
-                            </TouchableOpacity>
-                            <Text style={styles.coinStatValue}>{user?.coins} coins</Text>
-                        </View>
+                    <View style={styles.coinValue}>
+                        <TouchableOpacity>
+                            <CarrotCoin width={38} height={38} />
+                        </TouchableOpacity>
+                        <Text style={styles.coinStatValue}>{user?.coins} coins</Text>
                     </View>
                 </View>
+            </View>
 
             <Card styles={styles.section}>
                 <View style={styles.sectionHeader}>
                     <Text style={styles.sectionTitle}>Moje odznaczenia</Text>
-                    <TouchableOpacity onPress={() => console.log("")}>
-                        <Entypo name="chevron-with-circle-right" size={25} color="#437454"/>
+                    <TouchableOpacity onPress={() => { }}>
+                        <Entypo name="chevron-with-circle-right" size={25} color="#437454" />
                     </TouchableOpacity>
-                    </View>
+                </View>
                 <View style={styles.badgesGrid}>
                     {badges.map((_, index) => (
                         <TouchableOpacity key={index} style={styles.badgeItem}>
-                            <Ionicons name="medal-outline" size={24} color="#ccc"/>
+                            <Ionicons name="medal-outline" size={24} color="#ccc" />
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -56,19 +56,19 @@ const ProfileScreen = () => {
                 {user?.challengesProgress.map((challenge, index) => (
                     <View key={index} style={styles.challengeItem}>
                         <Progress.Circle progress={challenge.progress / 100}
-                                         color={"#437454"}/>
+                            color={"#437454"} />
                         <View style={styles.challengeContent}>
                             <Text style={styles.challengeTitle}>
                                 Przejdź 15 km rowerem w tygodniu
                             </Text>
                             <Text style={styles.challengeSubtitle}>5 km przejechane</Text>
-                            </View>
                         </View>
+                    </View>
                 ))}
 
             </Card>
-            <View style={{height: 100}}/>
-            </ScrollView>
+            <View style={{ height: 100 }} />
+        </ScrollView>
     );
 };
 
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 20,
         elevation: 2,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
     },
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         padding: 16,
         elevation: 1,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
     },
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         elevation: 1,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
     },

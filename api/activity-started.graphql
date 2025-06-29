@@ -1,0 +1,5 @@
+query ActivityStarted($userId: String!) {
+  activityStarted(userId: $userId) {
+    id
+  }
+}

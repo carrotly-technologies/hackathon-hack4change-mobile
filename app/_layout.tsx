@@ -1,7 +1,8 @@
-import {useFonts} from 'expo-font';
-import {Stack} from 'expo-router';
+import { ActivityStartedGuard } from '@/components/activity-started/ActivityStartedGuard';
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { useFonts } from 'expo-font';
+import { Stack } from 'expo-router';
 import React from "react";
-import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 
 const client = new ApolloClient({
     uri: "https://h4c-api.rabbithole.carrotly.tech/graphql",
@@ -29,16 +30,18 @@ const RootLayout = () => {
 
     return (
         <ApolloProvider client={client}>
-                <Stack screenOptions={{headerShown: false}}>
-                    <Stack.Screen name="home" options={{title: 'Home', headerShown: false, gestureEnabled: false}}/>
+            <ActivityStartedGuard>
+                <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="home" options={{ title: 'Home', headerShown: false, gestureEnabled: false }} />
                     <Stack.Screen name="activity"
-                                  options={{
-                                      title: 'Asset',
-                                      headerShown: true,
-                                      gestureEnabled: false,
-                                      headerBackVisible: true
-                                  }}/>
+                        options={{
+                            title: 'Asset',
+                            headerShown: true,
+                            gestureEnabled: false,
+                            headerBackVisible: true
+                        }} />
                 </Stack>
+            </ActivityStartedGuard>
         </ApolloProvider>
     );
 }

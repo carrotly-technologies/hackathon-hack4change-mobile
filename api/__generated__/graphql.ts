@@ -1,6 +1,5 @@
+import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import {gql} from '@apollo/client';
-
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -890,6 +889,13 @@ export type UserPaginationResponse = {
   metadata: PaginationMetadata;
 };
 
+export type ActivityStartedQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type ActivityStartedQuery = { __typename?: 'Query', activityStarted?: { __typename?: 'ActivityObject', id: any } | null };
+
 export type EventsQueryVariables = Exact<{
   input: EventFindManyInput;
   pagination: PaginationInput;
@@ -958,49 +964,21 @@ export type MarketplaceDetailsQueryVariables = Exact<{
 }>;
 
 
-export type MarketplaceDetailsQuery = {
-  __typename?: 'Query',
-  marketplace?: {
-    __typename?: 'MarketplaceObject',
-    createdAt: any,
-    description: string,
-    id: any,
-    name: string,
-    price: number,
-    updatedAt: any
-  } | null
-};
+export type MarketplaceDetailsQuery = { __typename?: 'Query', marketplace?: { __typename?: 'MarketplaceObject', createdAt: any, description: string, id: any, name: string, price: number, updatedAt: any } | null };
 
 export type MarketplacePurchaseMutationVariables = Exact<{
   input: MarketplacePurchaseInput;
 }>;
 
 
-export type MarketplacePurchaseMutation = {
-  __typename?: 'Mutation',
-  marketplacePurchase: { __typename?: 'MarketplaceObject', id: any }
-};
+export type MarketplacePurchaseMutation = { __typename?: 'Mutation', marketplacePurchase: { __typename?: 'MarketplaceObject', id: any } };
 
 export type MarketplacesQueryVariables = Exact<{
   input: MarketplaceFindManyInput;
 }>;
 
 
-export type MarketplacesQuery = {
-  __typename?: 'Query',
-  marketplaces: {
-    __typename?: 'MarketplacePaginationResponse',
-    data: Array<{
-      __typename?: 'MarketplaceObject',
-      createdAt: any,
-      description: string,
-      id: any,
-      name: string,
-      price: number,
-      updatedAt: any
-    }>
-  }
-};
+export type MarketplacesQuery = { __typename?: 'Query', marketplaces: { __typename?: 'MarketplacePaginationResponse', data: Array<{ __typename?: 'MarketplaceObject', createdAt: any, description: string, id: any, name: string, price: number, updatedAt: any }> } };
 
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1015,6 +993,46 @@ export type RankingQueryVariables = Exact<{
 export type RankingQuery = { __typename?: 'Query', leaderboard: Array<{ __typename?: 'LeaderboardEntryObject', id: any, firstname: string, lastname: string, activityPoints: number, avatarUrl?: string | null, rank: number, challengePoints: number, totalPoints: number }> };
 
 
+export const ActivityStartedDocument = gql`
+    query ActivityStarted($userId: String!) {
+  activityStarted(userId: $userId) {
+    id
+  }
+}
+    `;
+
+/**
+ * __useActivityStartedQuery__
+ *
+ * To run a query within a React component, call `useActivityStartedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActivityStartedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityStartedQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useActivityStartedQuery(baseOptions: Apollo.QueryHookOptions<ActivityStartedQuery, ActivityStartedQueryVariables> & ({ variables: ActivityStartedQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ActivityStartedQuery, ActivityStartedQueryVariables>(ActivityStartedDocument, options);
+      }
+export function useActivityStartedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivityStartedQuery, ActivityStartedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ActivityStartedQuery, ActivityStartedQueryVariables>(ActivityStartedDocument, options);
+        }
+export function useActivityStartedSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ActivityStartedQuery, ActivityStartedQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ActivityStartedQuery, ActivityStartedQueryVariables>(ActivityStartedDocument, options);
+        }
+export type ActivityStartedQueryHookResult = ReturnType<typeof useActivityStartedQuery>;
+export type ActivityStartedLazyQueryHookResult = ReturnType<typeof useActivityStartedLazyQuery>;
+export type ActivityStartedSuspenseQueryHookResult = ReturnType<typeof useActivityStartedSuspenseQuery>;
+export type ActivityStartedQueryResult = Apollo.QueryResult<ActivityStartedQuery, ActivityStartedQueryVariables>;
 export const EventsDocument = gql`
     query Events($input: EventFindManyInput!, $pagination: PaginationInput!, $sort: EventFindManySortInput!) {
   events(input: $input, pagination: $pagination, sort: $sort) {
@@ -1392,17 +1410,17 @@ export type ActivityUpdateMutationHookResult = ReturnType<typeof useActivityUpda
 export type ActivityUpdateMutationResult = Apollo.MutationResult<ActivityUpdateMutation>;
 export type ActivityUpdateMutationOptions = Apollo.BaseMutationOptions<ActivityUpdateMutation, ActivityUpdateMutationVariables>;
 export const MarketplaceDetailsDocument = gql`
-  query MarketplaceDetails($input: MarketplaceInput!) {
-    marketplace(input: $input) {
-      createdAt
-      description
-      id
-      name
-      price
-      updatedAt
-    }
+    query MarketplaceDetails($input: MarketplaceInput!) {
+  marketplace(input: $input) {
+    createdAt
+    description
+    id
+    name
+    price
+    updatedAt
   }
-`;
+}
+    `;
 
 /**
  * __useMarketplaceDetailsQuery__
@@ -1420,32 +1438,29 @@ export const MarketplaceDetailsDocument = gql`
  *   },
  * });
  */
-export function useMarketplaceDetailsQuery(baseOptions: Apollo.QueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables> & ({
-  variables: MarketplaceDetailsQueryVariables;
-  skip?: boolean;
-} | { skip: boolean; })) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
-}
+export function useMarketplaceDetailsQuery(baseOptions: Apollo.QueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables> & ({ variables: MarketplaceDetailsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
+      }
 export function useMarketplaceDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
+        }
 export function useMarketplaceDetailsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-  return Apollo.useSuspenseQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
-}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>(MarketplaceDetailsDocument, options);
+        }
 export type MarketplaceDetailsQueryHookResult = ReturnType<typeof useMarketplaceDetailsQuery>;
 export type MarketplaceDetailsLazyQueryHookResult = ReturnType<typeof useMarketplaceDetailsLazyQuery>;
 export type MarketplaceDetailsSuspenseQueryHookResult = ReturnType<typeof useMarketplaceDetailsSuspenseQuery>;
 export type MarketplaceDetailsQueryResult = Apollo.QueryResult<MarketplaceDetailsQuery, MarketplaceDetailsQueryVariables>;
 export const MarketplacePurchaseDocument = gql`
-  mutation MarketplacePurchase($input: MarketplacePurchaseInput!) {
-    marketplacePurchase(input: $input) {
-      id
-    }
+    mutation MarketplacePurchase($input: MarketplacePurchaseInput!) {
+  marketplacePurchase(input: $input) {
+    id
   }
-`;
+}
+    `;
 export type MarketplacePurchaseMutationFn = Apollo.MutationFunction<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>;
 
 /**
@@ -1466,27 +1481,26 @@ export type MarketplacePurchaseMutationFn = Apollo.MutationFunction<MarketplaceP
  * });
  */
 export function useMarketplacePurchaseMutation(baseOptions?: Apollo.MutationHookOptions<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useMutation<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>(MarketplacePurchaseDocument, options);
-}
-
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>(MarketplacePurchaseDocument, options);
+      }
 export type MarketplacePurchaseMutationHookResult = ReturnType<typeof useMarketplacePurchaseMutation>;
 export type MarketplacePurchaseMutationResult = Apollo.MutationResult<MarketplacePurchaseMutation>;
 export type MarketplacePurchaseMutationOptions = Apollo.BaseMutationOptions<MarketplacePurchaseMutation, MarketplacePurchaseMutationVariables>;
 export const MarketplacesDocument = gql`
-  query Marketplaces($input: MarketplaceFindManyInput!) {
-    marketplaces(input: $input, pagination: {}, sort: {}) {
-      data {
-        createdAt
-        description
-        id
-        name
-        price
-        updatedAt
-      }
+    query Marketplaces($input: MarketplaceFindManyInput!) {
+  marketplaces(input: $input, pagination: {}, sort: {}) {
+    data {
+      createdAt
+      description
+      id
+      name
+      price
+      updatedAt
     }
   }
-`;
+}
+    `;
 
 /**
  * __useMarketplacesQuery__
@@ -1504,21 +1518,18 @@ export const MarketplacesDocument = gql`
  *   },
  * });
  */
-export function useMarketplacesQuery(baseOptions: Apollo.QueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables> & ({
-  variables: MarketplacesQueryVariables;
-  skip?: boolean;
-} | { skip: boolean; })) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
-}
+export function useMarketplacesQuery(baseOptions: Apollo.QueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables> & ({ variables: MarketplacesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
+      }
 export function useMarketplacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
+        }
 export function useMarketplacesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MarketplacesQuery, MarketplacesQueryVariables>) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-  return Apollo.useSuspenseQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
-}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MarketplacesQuery, MarketplacesQueryVariables>(MarketplacesDocument, options);
+        }
 export type MarketplacesQueryHookResult = ReturnType<typeof useMarketplacesQuery>;
 export type MarketplacesLazyQueryHookResult = ReturnType<typeof useMarketplacesLazyQuery>;
 export type MarketplacesSuspenseQueryHookResult = ReturnType<typeof useMarketplacesSuspenseQuery>;

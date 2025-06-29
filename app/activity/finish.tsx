@@ -1,12 +1,12 @@
-import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {useActivityStore} from "@/store/activity.store";
-import React, {useEffect, useState} from "react";
+import { useActivityEndMutation } from "@/api/__generated__/graphql";
 import ActivitiyDropdown from "@/components/screens/activity/ActivitiyDropdown";
 import Map from "@/components/screens/activity/Map";
-import {router} from "expo-router";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {useActivityEndMutation} from "@/api/__generated__/graphql";
 import Card from "@/components/ui/Card";
+import { useActivityStore } from "@/store/activity.store";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const FinishScreen = () => {
     const {
@@ -26,7 +26,7 @@ const FinishScreen = () => {
     } = useActivityStore();
     const [activityName, setActivityName] = useState("");
     const [description, setDescription] = useState("");
-    const [endActivity, {data, loading, error}] = useActivityEndMutation();
+    const [endActivity, { data, loading, error }] = useActivityEndMutation();
 
     const formatTime = (seconds: number) => {
         const hours = Math.floor(seconds / 3600);
@@ -102,7 +102,7 @@ const FinishScreen = () => {
                             }],
                             color: "red",
                             width: 10
-                        }))}/>
+                        }))} />
                     </View>
                     <View style={styles.photoContainer}>
                         <View style={styles.photoPlaceholder}>
@@ -111,9 +111,9 @@ const FinishScreen = () => {
                     </View>
                 </View>
 
-                <ActivitiyDropdown defaultValue={type || undefined}/>
+                <ActivitiyDropdown defaultValue={type || undefined} />
 
-                <Card styles={{marginVertical: 20}}>
+                <Card styles={{ marginVertical: 20 }}>
                     <Text style={styles.descriptionLabel}>Szczegóły</Text>
                     <TextInput
                         style={styles.descriptionInput}
