@@ -14,7 +14,7 @@ export const ActivityStartedGuard = ({ children }: PropsWithChildren<{}>) => {
     pollInterval: 1000,
   })
 
-  const { setActivityId } = useActivityStore();
+  const { isPlaying, setActivityId, resetActivity } = useActivityStore();
 
   useEffect(() => {
     const activityId = data?.activityStarted?.id;
@@ -26,6 +26,12 @@ export const ActivityStartedGuard = ({ children }: PropsWithChildren<{}>) => {
 
         router.replace(`/activity`);
       }
+    }
+
+    if (!activityId && isPlaying) {
+      resetActivity();
+
+      router.replace('/home/activity');
     }
   }, [data, pathname, blacklist]);
 
