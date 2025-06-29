@@ -51,7 +51,12 @@ const ActivityIndex = () => {
     }, [data]);
 
     useEffect(() => {
-    }, [trashLocations]);
+        if (locations.length > 1) {
+            let firstLocation = locations[locations.length - 2];
+            let secondLocation = locations[locations.length - 1];
+            incrementDistance(calculateDistance(firstLocation.latitude, firstLocation.longitude, secondLocation.latitude, secondLocation.longitude));
+        }
+    }, [locations]);
 
     useEffect(() => {
         (async () => {
