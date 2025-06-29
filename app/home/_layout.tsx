@@ -1,7 +1,11 @@
 import CustomBottomTab from "@/components/bottom-tab/CustomBottomTab";
+import { ActionsIcon } from "@/components/svg/ActionsIcon";
+import { HomeIcon } from "@/components/svg/HomeIcon";
+import { PlayIcon } from "@/components/svg/PlayIcon";
+import { ProfileIcon } from "@/components/svg/ProfileIcon";
+import { RankingIcon } from "@/components/svg/RankingIcon";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { TabScreen } from "@/utils/types";
-import { Octicons } from "@expo/vector-icons";
 import { router, Tabs } from 'expo-router';
 import React from "react";
 import { TouchableOpacity } from "react-native";
@@ -10,36 +14,37 @@ const TabScreens: TabScreen[] = [
     {
         name: "index",
         title: "Home",
-        icon: (props) => <Octicons name="home" size={24} color={props.color} />
+        icon: (props) => <HomeIcon color={props.color} width={24} height={24} />
     },
     {
         name: "rank",
         title: "Ranking",
-        icon: (props) => <Octicons name="search" size={24} color={props.color} />
+        icon: (props) => <RankingIcon color={props.color} width={24} height={24} />
     },
     {
         name: "activity",
         title: "Rozpocznij",
         icon: (props) => {
             if (props.alternative) {
-                return <TouchableOpacity onPress={() => {
-                    router.replace("/activity")
-                }}>
-                    <Octicons name={"play"} size={24} color={props.color} />
-                </TouchableOpacity>;
+                return (
+                    <TouchableOpacity onPress={() => router.replace("/activity")}>
+                        <PlayIcon color={props.color} width={24} height={24} />
+                    </TouchableOpacity>
+                )
             }
-            return <Octicons name={"plus-circle"} size={24} color={props.color} />;
+
+            return <PlayIcon color={props.color} width={24} height={24} />;
         }
     },
     {
         name: "events",
         title: "Akcje",
-        icon: (props) => <Octicons name="bell" size={24} color={props.color} />
+        icon: (props) => <ActionsIcon color={props.color} width={24} height={24} />
     },
     {
         name: "profile",
         title: "Profil",
-        icon: (props) => <Octicons name="person" size={24} color={props.color} />,
+        icon: (props) => <ProfileIcon color={props.color} width={24} height={24} />
     },
 ]
 

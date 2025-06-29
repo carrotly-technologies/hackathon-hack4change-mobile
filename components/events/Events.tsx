@@ -2,7 +2,7 @@ import { Sort, useEventsQuery } from "@/api/__generated__/graphql";
 import { Day } from "@/components/events/Day";
 import { Event } from "@/components/events/Event";
 import { Filters } from "@/components/events/Filters";
-import { Ionicons } from "@expo/vector-icons";
+import { FiltersIcon } from "@/components/svg/FiltersIcon";
 import { format } from "date-fns";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -69,7 +69,7 @@ export const Events = () => {
           </Text>
           <Pressable onPress={() => setFilterModalVisible((v) => !v)}>
             <View style={{ width: 32, flexDirection: 'row', justifyContent: 'center' }}>
-              <Ionicons name="filter-circle-outline" size={32} />
+              <FiltersIcon width={32} height={32} color="#000" />
             </View>
           </Pressable>
         </View>
