@@ -6,6 +6,7 @@ import {router} from "expo-router";
 import {Entypo} from "@expo/vector-icons";
 import React from "react";
 import {LinearGradient} from "expo-linear-gradient";
+import {useActivityStore} from "@/store/activity.store";
 
 const MarketplaceIndex = () => {
 
@@ -14,6 +15,8 @@ const MarketplaceIndex = () => {
             input: {}
         }
     })
+
+    const {user} = useActivityStore();
 
     if (loading) return <Text>Loading...</Text>
     if (error) return <Text>Error...</Text>
@@ -32,7 +35,7 @@ const MarketplaceIndex = () => {
                 <View style={styles.coinContainer}>
                     <Text style={{fontSize: 12}}>Twoje coiny</Text>
                     <View style={styles.coinRow}>
-                        <Text style={styles.coinValue}>123</Text>
+                        <Text style={styles.coinValue}>{user?.coins}</Text>
                         <CarrotCoin width={38} height={38}/>
                     </View>
                 </View>

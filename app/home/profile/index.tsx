@@ -29,7 +29,7 @@ const ProfileScreen = () => {
                             <TouchableOpacity>
                                 <CarrotCoin width={38} height={38}/>
                             </TouchableOpacity>
-                            <Text style={styles.coinStatValue}>123 coins</Text>
+                            <Text style={styles.coinStatValue}>{user?.coins} coins</Text>
                         </View>
                     </View>
                 </View>
