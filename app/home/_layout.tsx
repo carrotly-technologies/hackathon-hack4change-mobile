@@ -33,7 +33,7 @@ const TabScreens: TabScreen[] = [
     },
     {
         name: "events",
-        title: "Eventy",
+        title: "Akcje",
         icon: (props) => <Octicons name="bell" size={24} color={props.color} />
     },
     {

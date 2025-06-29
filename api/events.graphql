@@ -12,6 +12,7 @@ query Events(
       place
       localization
       imageUrl
+      link
       eventType
       userIds
       createdAt

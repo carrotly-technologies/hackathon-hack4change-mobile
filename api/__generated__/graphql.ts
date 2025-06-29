@@ -1,6 +1,5 @@
+import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import {gql} from '@apollo/client';
-
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -187,6 +186,7 @@ export type ChallengeCreateInput = {
   iconUrl: Scalars['String']['input'];
   points: Scalars['Float']['input'];
   topic: Scalars['String']['input'];
+  type: ChallengeType;
 };
 
 export type ChallengeFindManyInput = {
@@ -216,6 +216,7 @@ export type ChallengeObject = {
   id: Scalars['ObjectID']['output'];
   points: Scalars['Float']['output'];
   topic: Scalars['String']['output'];
+  type: ChallengeType;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -235,12 +236,18 @@ export type ChallengeStartInput = {
   userId: Scalars['ObjectID']['input'];
 };
 
+export enum ChallengeType {
+  Company = 'COMPANY',
+  Own = 'OWN'
+}
+
 export type ChallengeUpdateInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   iconUrl?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ObjectID']['input'];
   points?: InputMaybe<Scalars['Float']['input']>;
   topic?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<ChallengeType>;
 };
 
 export type ChallengeUpdateProgressInput = {
@@ -264,6 +271,7 @@ export enum Error {
 export type EventCreateInput = {
   eventType: EventType;
   imageUrl?: Scalars['String']['input'];
+  link?: InputMaybe<Scalars['String']['input']>;
   localization: LocalizationInput;
   name: Scalars['String']['input'];
   time: Scalars['String']['input'];
@@ -306,6 +314,7 @@ export type EventObject = {
   eventType: EventType;
   id: Scalars['ObjectID']['output'];
   imageUrl: Scalars['String']['output'];
+  link?: Maybe<Scalars['String']['output']>;
   localization: Array<Scalars['Float']['output']>;
   name: Scalars['String']['output'];
   place: Scalars['String']['output'];
@@ -320,7 +329,6 @@ export type EventPaginationResponse = {
   metadata: PaginationMetadata;
 };
 
-/** Type of the event, can be ECOLOGICAL or SOCIAL */
 export enum EventType {
   Ecological = 'ECOLOGICAL',
   Social = 'SOCIAL'
@@ -330,6 +338,7 @@ export type EventUpdateInput = {
   eventType?: InputMaybe<EventType>;
   id: Scalars['String']['input'];
   imageIcon?: InputMaybe<Scalars['String']['input']>;
+  link?: InputMaybe<Scalars['String']['input']>;
   localization?: InputMaybe<LocalizationInput>;
   name?: InputMaybe<Scalars['String']['input']>;
   time?: InputMaybe<Scalars['String']['input']>;
@@ -887,7 +896,7 @@ export type EventsQueryVariables = Exact<{
 }>;
 
 
-export type EventsQuery = { __typename?: 'Query', events: { __typename?: 'EventPaginationResponse', data: Array<{ __typename?: 'EventObject', id: any, name: string, time: any, date: any, place: string, localization: Array<number>, imageUrl: string, eventType: EventType, userIds: Array<string>, createdAt: any, updatedAt: any }>, metadata: { __typename?: 'PaginationMetadata', pageSize: number, currentPage: number, totalPages: number, totalCount: number } } };
+export type EventsQuery = { __typename?: 'Query', events: { __typename?: 'EventPaginationResponse', data: Array<{ __typename?: 'EventObject', id: any, name: string, time: any, date: any, place: string, localization: Array<number>, imageUrl: string, link?: string | null, eventType: EventType, userIds: Array<string>, createdAt: any, updatedAt: any }>, metadata: { __typename?: 'PaginationMetadata', pageSize: number, currentPage: number, totalPages: number, totalCount: number } } };
 
 export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -901,59 +910,21 @@ export type ActivitiesQueryVariables = Exact<{
 }>;
 
 
-export type ActivitiesQuery = {
-  __typename?: 'Query',
-  activities: {
-    __typename?: 'ActivityPaginationResponse',
-    data: Array<{
-      __typename?: 'ActivityObject',
-      activityType: ActivityType,
-      createdAt: any,
-      currentDuration?: number | null,
-      description?: string | null,
-      distance: number,
-      durationTime: number,
-      endTime?: any | null,
-      id: any,
-      imageUrls: Array<string>,
-      name?: string | null,
-      points: number,
-      startTime?: any | null,
-      trashCount: number,
-      updatedAt: any,
-      userId: any,
-      path: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
-      trashLocations: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>,
-      user?: {
-        __typename?: 'UserObject',
-        avatarUrl?: string | null,
-        id: any,
-        firstname: string,
-        lastname: string
-      } | null
-    }>
-  }
-};
+export type ActivitiesQuery = { __typename?: 'Query', activities: { __typename?: 'ActivityPaginationResponse', data: Array<{ __typename?: 'ActivityObject', activityType: ActivityType, createdAt: any, currentDuration?: number | null, description?: string | null, distance: number, durationTime: number, endTime?: any | null, id: any, imageUrls: Array<string>, name?: string | null, points: number, startTime?: any | null, trashCount: number, updatedAt: any, userId: any, path: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>, trashLocations: Array<{ __typename?: 'PathPointObject', lat: string, lon: string }>, user?: { __typename?: 'UserObject', avatarUrl?: string | null, id: any, firstname: string, lastname: string } | null }> } };
 
 export type ActivityAddPathPointMutationVariables = Exact<{
   input: ActivityAddPathPointInput;
 }>;
 
 
-export type ActivityAddPathPointMutation = {
-  __typename?: 'Mutation',
-  activityAddPathPoint: { __typename?: 'ActivityObject', id: any }
-};
+export type ActivityAddPathPointMutation = { __typename?: 'Mutation', activityAddPathPoint: { __typename?: 'ActivityObject', id: any } };
 
 export type ActivityAddTrashMutationVariables = Exact<{
   input: ActivityAddTrashInput;
 }>;
 
 
-export type ActivityAddTrashMutation = {
-  __typename?: 'Mutation',
-  activityAddTrash: { __typename?: 'ActivityObject', id: any }
-};
+export type ActivityAddTrashMutation = { __typename?: 'Mutation', activityAddTrash: { __typename?: 'ActivityObject', id: any } };
 
 export type ActivityEndMutationVariables = Exact<{
   input: ActivityEndInput;
@@ -967,10 +938,7 @@ export type ActivityStartMutationVariables = Exact<{
 }>;
 
 
-export type ActivityStartMutation = {
-  __typename?: 'Mutation',
-  activityStart: { __typename?: 'ActivityObject', id: any }
-};
+export type ActivityStartMutation = { __typename?: 'Mutation', activityStart: { __typename?: 'ActivityObject', id: any } };
 
 export type ActivityTypesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -982,10 +950,7 @@ export type ActivityUpdateMutationVariables = Exact<{
 }>;
 
 
-export type ActivityUpdateMutation = {
-  __typename?: 'Mutation',
-  activityUpdate?: { __typename?: 'ActivityObject', id: any } | null
-};
+export type ActivityUpdateMutation = { __typename?: 'Mutation', activityUpdate?: { __typename?: 'ActivityObject', id: any } | null };
 
 export type MarketplaceDetailsQueryVariables = Exact<{
   input: MarketplaceInput;
@@ -1029,25 +994,7 @@ export type MarketplacesQuery = {
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserQuery = {
-  __typename?: 'Query',
-  user?: {
-    __typename?: 'UserObject',
-    id: any,
-    email: string,
-    firstname: string,
-    lastname: string,
-    avatarUrl?: string | null,
-    coin: number,
-    challengeProgress: Array<{
-      __typename?: 'UserChallengeProgressObject',
-      challengeId: any,
-      id: any,
-      progress: number,
-      status: string
-    }>
-  } | null
-};
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'UserObject', id: any, email: string, firstname: string, lastname: string, avatarUrl?: string | null, coin: number, challengeProgress: Array<{ __typename?: 'UserChallengeProgressObject', challengeId: any, id: any, progress: number, status: string }> } | null };
 
 export type RankingQueryVariables = Exact<{
   input: LeaderboardFindInput;
@@ -1068,6 +1015,7 @@ export const EventsDocument = gql`
       place
       localization
       imageUrl
+      link
       eventType
       userIds
       createdAt
@@ -1227,12 +1175,12 @@ export type ActivitiesLazyQueryHookResult = ReturnType<typeof useActivitiesLazyQ
 export type ActivitiesSuspenseQueryHookResult = ReturnType<typeof useActivitiesSuspenseQuery>;
 export type ActivitiesQueryResult = Apollo.QueryResult<ActivitiesQuery, ActivitiesQueryVariables>;
 export const ActivityAddPathPointDocument = gql`
-  mutation ActivityAddPathPoint($input: ActivityAddPathPointInput!) {
-    activityAddPathPoint(input: $input) {
-      id
-    }
+    mutation ActivityAddPathPoint($input: ActivityAddPathPointInput!) {
+  activityAddPathPoint(input: $input) {
+    id
   }
-`;
+}
+    `;
 export type ActivityAddPathPointMutationFn = Apollo.MutationFunction<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>;
 
 /**
@@ -1253,19 +1201,19 @@ export type ActivityAddPathPointMutationFn = Apollo.MutationFunction<ActivityAdd
  * });
  */
 export function useActivityAddPathPointMutation(baseOptions?: Apollo.MutationHookOptions<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useMutation<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>(ActivityAddPathPointDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>(ActivityAddPathPointDocument, options);
+      }
 export type ActivityAddPathPointMutationHookResult = ReturnType<typeof useActivityAddPathPointMutation>;
 export type ActivityAddPathPointMutationResult = Apollo.MutationResult<ActivityAddPathPointMutation>;
 export type ActivityAddPathPointMutationOptions = Apollo.BaseMutationOptions<ActivityAddPathPointMutation, ActivityAddPathPointMutationVariables>;
 export const ActivityAddTrashDocument = gql`
-  mutation ActivityAddTrash($input: ActivityAddTrashInput!) {
-    activityAddTrash(input: $input) {
-      id
-    }
+    mutation ActivityAddTrash($input: ActivityAddTrashInput!) {
+  activityAddTrash(input: $input) {
+    id
   }
-`;
+}
+    `;
 export type ActivityAddTrashMutationFn = Apollo.MutationFunction<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>;
 
 /**
@@ -1286,19 +1234,19 @@ export type ActivityAddTrashMutationFn = Apollo.MutationFunction<ActivityAddTras
  * });
  */
 export function useActivityAddTrashMutation(baseOptions?: Apollo.MutationHookOptions<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useMutation<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>(ActivityAddTrashDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>(ActivityAddTrashDocument, options);
+      }
 export type ActivityAddTrashMutationHookResult = ReturnType<typeof useActivityAddTrashMutation>;
 export type ActivityAddTrashMutationResult = Apollo.MutationResult<ActivityAddTrashMutation>;
 export type ActivityAddTrashMutationOptions = Apollo.BaseMutationOptions<ActivityAddTrashMutation, ActivityAddTrashMutationVariables>;
 export const ActivityEndDocument = gql`
-  mutation ActivityEnd($input: ActivityEndInput!) {
-    activityEnd(input: $input) {
-      id
-    }
+    mutation ActivityEnd($input: ActivityEndInput!) {
+  activityEnd(input: $input) {
+    id
   }
-`;
+}
+    `;
 export type ActivityEndMutationFn = Apollo.MutationFunction<ActivityEndMutation, ActivityEndMutationVariables>;
 
 /**
@@ -1319,19 +1267,19 @@ export type ActivityEndMutationFn = Apollo.MutationFunction<ActivityEndMutation,
  * });
  */
 export function useActivityEndMutation(baseOptions?: Apollo.MutationHookOptions<ActivityEndMutation, ActivityEndMutationVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useMutation<ActivityEndMutation, ActivityEndMutationVariables>(ActivityEndDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActivityEndMutation, ActivityEndMutationVariables>(ActivityEndDocument, options);
+      }
 export type ActivityEndMutationHookResult = ReturnType<typeof useActivityEndMutation>;
 export type ActivityEndMutationResult = Apollo.MutationResult<ActivityEndMutation>;
 export type ActivityEndMutationOptions = Apollo.BaseMutationOptions<ActivityEndMutation, ActivityEndMutationVariables>;
 export const ActivityStartDocument = gql`
-  mutation ActivityStart($input: ActivityStartInput!) {
-    activityStart(input: $input) {
-      id
-    }
+    mutation ActivityStart($input: ActivityStartInput!) {
+  activityStart(input: $input) {
+    id
   }
-`;
+}
+    `;
 export type ActivityStartMutationFn = Apollo.MutationFunction<ActivityStartMutation, ActivityStartMutationVariables>;
 
 /**
@@ -1352,9 +1300,9 @@ export type ActivityStartMutationFn = Apollo.MutationFunction<ActivityStartMutat
  * });
  */
 export function useActivityStartMutation(baseOptions?: Apollo.MutationHookOptions<ActivityStartMutation, ActivityStartMutationVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useMutation<ActivityStartMutation, ActivityStartMutationVariables>(ActivityStartDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActivityStartMutation, ActivityStartMutationVariables>(ActivityStartDocument, options);
+      }
 export type ActivityStartMutationHookResult = ReturnType<typeof useActivityStartMutation>;
 export type ActivityStartMutationResult = Apollo.MutationResult<ActivityStartMutation>;
 export type ActivityStartMutationOptions = Apollo.BaseMutationOptions<ActivityStartMutation, ActivityStartMutationVariables>;
@@ -1400,12 +1348,12 @@ export type ActivityTypesLazyQueryHookResult = ReturnType<typeof useActivityType
 export type ActivityTypesSuspenseQueryHookResult = ReturnType<typeof useActivityTypesSuspenseQuery>;
 export type ActivityTypesQueryResult = Apollo.QueryResult<ActivityTypesQuery, ActivityTypesQueryVariables>;
 export const ActivityUpdateDocument = gql`
-  mutation ActivityUpdate($input: ActivityUpdateInput!) {
-    activityUpdate(input: $input) {
-      id
-    }
+    mutation ActivityUpdate($input: ActivityUpdateInput!) {
+  activityUpdate(input: $input) {
+    id
   }
-`;
+}
+    `;
 export type ActivityUpdateMutationFn = Apollo.MutationFunction<ActivityUpdateMutation, ActivityUpdateMutationVariables>;
 
 /**
@@ -1426,9 +1374,9 @@ export type ActivityUpdateMutationFn = Apollo.MutationFunction<ActivityUpdateMut
  * });
  */
 export function useActivityUpdateMutation(baseOptions?: Apollo.MutationHookOptions<ActivityUpdateMutation, ActivityUpdateMutationVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useMutation<ActivityUpdateMutation, ActivityUpdateMutationVariables>(ActivityUpdateDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActivityUpdateMutation, ActivityUpdateMutationVariables>(ActivityUpdateDocument, options);
+      }
 export type ActivityUpdateMutationHookResult = ReturnType<typeof useActivityUpdateMutation>;
 export type ActivityUpdateMutationResult = Apollo.MutationResult<ActivityUpdateMutation>;
 export type ActivityUpdateMutationOptions = Apollo.BaseMutationOptions<ActivityUpdateMutation, ActivityUpdateMutationVariables>;
